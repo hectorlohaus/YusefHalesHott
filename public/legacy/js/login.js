@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const btnLogin = document.getElementById('btn-login');
-    const btnGuest = document.getElementById('btn-guest');
     const emailEl = document.getElementById('email');
     const passwordEl = document.getElementById('password');
     const errorMessageContainer = document.getElementById('error-message');
@@ -72,10 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Entrar como Invitado
-    btnGuest.addEventListener('click', () => {
-        window.location.href = 'invitado.html';
-    });
 
     // Función para mostrar/ocultar errores con estilo robusto
     function showError(message) {

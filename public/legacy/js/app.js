@@ -67,7 +67,7 @@ const App = {
         if (State.activeTab !== 'registros') return;
 
         const schema = SCHEMAS[State.currentTable];
-        if (UI.els['app-title']) UI.els['app-title'].textContent = isAdmin ? schema.tableName : `${schema.tableName} (Invitado)`;
+        if (UI.els['app-title']) UI.els['app-title'].textContent = schema.tableName;
 
         if (UI.els['table-header']) {
             let headerHtml = `<tr class="bg-slate-100 text-slate-600 uppercase text-xs leading-normal">`;
@@ -354,28 +354,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         UI.init();
         if (typeof BuscadorService !== 'undefined') BuscadorService.init();
 
-        // CORRECCIÓN: Forzar ocultación de columna ID si es invitado
-        if (typeof isAdmin !== 'undefined' && !isAdmin) {
-            if (SCHEMAS['repertorio_conservador']) {
-                SCHEMAS['repertorio_conservador'].hiddenColumns = [0];
-            }
-        }
 
-        if (typeof isAdmin !== 'undefined' && !isAdmin) {
-            const cierreElements = document.querySelectorAll('[id^="btn-cierre-"]');
-            cierreElements.forEach(el => {
-                const container = el.closest('.flex.items-start.gap-4');
-                if (container) {
-                    container.style.display = 'none';
-                    const separator = container.previousElementSibling;
-                    if (separator && separator.classList.contains('border-t')) {
-                        separator.style.display = 'none';
-                    }
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-        }
 
         State.supabase.auth.onAuthStateChange((event, session) => {
             if (typeof isAdmin !== 'undefined' && isAdmin && !session) window.location.href = 'index.html';

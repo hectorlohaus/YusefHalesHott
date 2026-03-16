@@ -46,23 +46,8 @@
                         });
                     }
                 } else {
-                    isAdmin = false;
-                    if(userStatus) userStatus.textContent = 'Invitado';
-                    
-                    // Cambiar enlaces para modo Invitado
-                    if(navRegistros) {
-                        navRegistros.href = 'invitado.html';
-                        navRegistros.textContent = 'Consulta de Registros';
-                    }
-                    if(navInformes) navInformes.href = 'informes_invitado.html';
-
-                    // Convertir botón de Logout en Iniciar Sesión para invitados
-                    if(btnLogout) {
-                        btnLogout.textContent = 'Iniciar Sesión';
-                        btnLogout.classList.remove('hover:text-red-600');
-                        btnLogout.classList.add('hover:text-blue-600');
-                        btnLogout.addEventListener('click', () => window.location.href = 'index.html');
-                    }
+                    // Si no hay sesión, fuera al login
+                    window.location.href = 'index.html';
                 }
                 
                 window.State = {
