@@ -50,6 +50,7 @@ migracion_2_optimizacion_dashboard.sql
 migracion_3_campo_codigo_solicitud.sql
 migracion_4_documentos_necesarios_servicios.sql
 INSTRUCCIONES_DESPLIEGUE_VERCEL.md
+PROPUESTA_PRECIOS_CHILE.md
 
 # Versiones ocultas (con punto) pedidas por el usuario
 .bd_organizada.sql
@@ -60,3 +61,6 @@ INSTRUCCIONES_DESPLIEGUE_VERCEL.md
 .migraciones_2_optimizacion_dashboard.sql
 .migraciones_3_campo_codigo_solicitud.sql
 .migraciones_4_documentos_necesarios_servicios.sql
+
+# Carpeta de respaldo de la versión antigua
+"web antigua actualizada/"
