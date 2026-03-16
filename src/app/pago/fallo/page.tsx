@@ -1,7 +1,8 @@
 import Link from 'next/link';
 
-export default function PagoFalloPage(props: { searchParams: { solicitudId?: string, reason?: string, status?: string } }) {
-  const { solicitudId, reason, status } = props.searchParams;
+export default async function PagoFalloPage(props: { searchParams: Promise<{ solicitudId?: string, reason?: string, status?: string }> }) {
+  const searchParams = await props.searchParams;
+  const { solicitudId, reason, status } = searchParams;
 
   return (
     <div className="flex flex-col min-h-[70vh] items-center justify-center p-4 bg-slate-50">

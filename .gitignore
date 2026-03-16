@@ -49,6 +49,7 @@ read_pdf.py
 migracion_2_optimizacion_dashboard.sql
 migracion_3_campo_codigo_solicitud.sql
 migracion_4_documentos_necesarios_servicios.sql
+INSTRUCCIONES_DESPLIEGUE_VERCEL.md
 
 # Versiones ocultas (con punto) pedidas por el usuario
 .bd_organizada.sql
