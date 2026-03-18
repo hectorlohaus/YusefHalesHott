@@ -1,8 +1,10 @@
 import Link from 'next/link';
-
+import WelcomeModal from '@/components/WelcomeModal';
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
+      <WelcomeModal />
+      
       {/* Hero Section */}
       <section className="bg-[#000080] text-white py-20 lg:py-32 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
