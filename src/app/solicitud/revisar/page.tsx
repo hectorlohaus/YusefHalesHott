@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 
 export default function RevisarSolicitudPage() {
   const [code, setCode] = useState('');
+  const [rut, setRut] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -12,77 +13,123 @@ export default function RevisarSolicitudPage() {
     setError('');
 
     // Limpiar el código: quitar # si lo ingresaron, y espacios
-    const cleaned = code.trim().replace(/^#/, '').toLowerCase();
+    const cleanedCode = code.trim().replace(/^#/, '').toLowerCase();
+    const cleanedRut = rut.trim();
 
-    if (!cleaned || cleaned.length < 6) {
+    if (!cleanedCode || cleanedCode.length < 6) {
       setError('Por favor ingresa un código de solicitud válido.');
       return;
     }
 
+    if (!cleanedRut) {
+      setError('Por favor ingresa un RUT válido.');
+      return;
+    }
+
     // Redirigir a la vista del comprobante usando el ID como búsqueda parcial
-    router.push(`/solicitud/estado?codigo=${encodeURIComponent(cleaned)}`);
+    router.push(`/solicitud/estado?codigo=${encodeURIComponent(cleanedCode)}&rut=${encodeURIComponent(cleanedRut)}`);
   };
 
   return (
-    <div className="flex flex-col min-h-[80vh] items-center justify-center py-16 px-4 bg-slate-50">
-      <div className="max-w-md w-full">
-        
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#000080] text-white rounded-2xl shadow-lg mb-4">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-serif font-bold text-slate-900 mb-2">Revisar Solicitud</h1>
-          <p className="text-slate-600">
-            Ingrese el código único de su solicitud para ver su estado actual.
+    <div className="flex flex-col md:flex-row w-full bg-background font-body text-on-background selection:bg-secondary-fixed min-h-screen">
+      {/* Left Side: Visual Anchor */}
+      <section className="relative w-full md:w-1/2 min-h-[409px] md:min-h-screen overflow-hidden">
+        <div className="absolute inset-0 bg-primary-container/60 z-10"></div>
+        <img 
+          alt="Modern Office" 
+          className="absolute inset-0 w-full h-full object-cover grayscale-[20%]" 
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEXKREmCVQ20CMz6xEepv2vKhatBomx-lzUCq_-zjEvoZo8PD3NKVgHSb-JkXjgxVbozoxNRl51TtByCKhNgwZJtrzhyzvQVEp1K_K5vVr6zzFXzjU-JSHpNJracvok7DIjHHlKyjt7WonBRBKTOLTNZAESsSkL7oK19jO-SM_c5Z4Of34Ef3BbFbsJx44qEb0_aEGvQlMAj_aJrY9DDS4rZC15zqAWaP3q-Su3LnI2LW30oxUj_Jbgoc1dSZMWA-DgAgY81xZhw" 
+        />
+        <div className="relative z-20 h-full flex flex-col justify-end p-12 md:p-24 space-y-6">
+          <h1 className="font-headline text-5xl md:text-7xl text-slate-50 leading-tight tracking-tight max-w-xl">
+            Excelencia Legal en la Era <span className="text-secondary-fixed-dim">Digital.</span>
+          </h1>
+          <p className="text-slate-300 font-light text-lg max-w-md leading-relaxed">
+            Acceda a sus documentos y estados de trámite con la seguridad y respaldo de Notaría Traiguén SpA.
           </p>
+          <div className="flex items-center gap-4 pt-8">
+            <div className="w-12 h-[1px] bg-secondary-fixed-dim"></div>
+            <span className="text-xs uppercase tracking-[0.3em] text-secondary-fixed-dim font-medium">Seguridad Certificada</span>
+          </div>
         </div>
+      </section>
 
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="codigo" className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">
-                Código de Solicitud
-              </label>
+      {/* Right Side: Interaction Canvas */}
+      <section className="w-full md:w-1/2 bg-surface flex items-center justify-center p-8 md:p-24">
+        <div className="w-full max-w-md">
+          <div className="mb-12">
+            <h2 className="font-headline text-3xl text-on-surface mb-2">Revisar Solicitud</h2>
+            <p className="text-on-surface-variant font-light">Ingrese sus credenciales para consultar el estado actual de su trámite notarial.</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Input Field: Folio */}
+            <div className="space-y-2">
+              <label className="block font-label text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Código de solicitud</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono font-bold text-lg">#</span>
-                <input
-                  id="codigo"
+                <input 
                   type="text"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  placeholder="Ej: CB640AE4"
-                  className="w-full pl-9 pr-4 py-3.5 text-lg font-mono border-2 border-slate-200 rounded-xl focus:outline-none focus:border-[#000080] focus:ring-4 focus:ring-blue-100 transition-all uppercase tracking-widest"
-                  autoComplete="off"
+                  className="w-full bg-surface-container-highest border-none rounded-xl px-4 py-4 focus:ring-2 focus:ring-secondary/20 focus:bg-surface-container-lowest transition-all duration-300 placeholder:text-on-surface-variant/40" 
+                  placeholder="CB640AE4" 
                 />
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50">description</span>
               </div>
-              <p className="text-xs text-slate-500 mt-2">
-                El código aparece en su comprobante. Ejemplo: <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded">CB640AE4</span>
-              </p>
-              {error && (
-                <p className="text-sm text-red-600 font-medium mt-2 flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                  {error}
-                </p>
-              )}
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-[#000080] text-white py-4 rounded-xl text-lg font-bold hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 shadow-sm"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              Buscar Solicitud
-            </button>
-          </form>
-        </div>
+            {/* Input Field: RUT */}
+            <div className="space-y-2">
+              <label className="block font-label text-xs uppercase tracking-widest text-on-surface-variant font-semibold">RUT del Solicitante</label>
+              <div className="relative">
+                <input 
+                  type="text"
+                  value={rut}
+                  onChange={(e) => setRut(e.target.value)}
+                  className="w-full bg-surface-container-highest border-none rounded-xl px-4 py-4 focus:ring-2 focus:ring-secondary/20 focus:bg-surface-container-lowest transition-all duration-300 placeholder:text-on-surface-variant/40" 
+                  placeholder="12.345.678-9" 
+                />
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50">fingerprint</span>
+              </div>
+            </div>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
-          ¿Tiene dudas? Comuníquese con la notaría al{' '}
-          <a href="tel:+56451234567" className="text-[#000080] font-medium hover:underline">(45) 123-4567</a>
-        </p>
-      </div>
+            {error && (
+              <p className="text-sm text-error font-medium flex items-center gap-1">
+                <span className="material-symbols-outlined text-sm">error</span>
+                {error}
+              </p>
+            )}
+
+            {/* CTA Section */}
+            <div className="pt-4 space-y-6">
+              <button type="submit" className="w-full bg-primary text-on-primary font-medium py-4 rounded-xl shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                <span>Consultar Estado</span>
+                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              </button>
+              <div className="flex items-center px-2">
+                <p className="w-full text-center text-xs font-medium text-on-surface-variant uppercase tracking-wider">
+                  ¿Tiene dudas? Comuníquese con la notaría al (44) 305 1909
+                </p>
+              </div>
+            </div>
+          </form>
+
+          {/* Information Bento Grid Minor */}
+          <div className="mt-20 grid grid-cols-2 gap-4">
+            <div className="p-6 rounded-2xl bg-surface-container-low">
+              <span className="material-symbols-outlined text-secondary mb-3">verified_user</span>
+              <h4 className="text-sm font-semibold text-on-surface mb-1">Encriptación 256-bit</h4>
+              <p className="text-xs text-on-surface-variant leading-relaxed">Sus datos están protegidos bajo los más altos estándares.</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-surface-container-low">
+              <span className="material-symbols-outlined text-secondary mb-3">schedule</span>
+              <h4 className="text-sm font-semibold text-on-surface mb-1">Sincronización</h4>
+              <p className="text-xs text-on-surface-variant leading-relaxed">Actualizaciones en tiempo real con nuestra oficina física.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </div>
   );
 }
