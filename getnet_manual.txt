@@ -1,0 +1,1802 @@
+Enero 2024 | Versión 2.3
+Manual de
+Integración vía API 
+Web Checkout
+
+Manual Integración API Web Checkout – Versión 2.3
+2
+INDICE
+3
+ n
+óic
+c
+u
+d
+o
+rt
+n
+I
+4
+7
+Flujo de integración 
+8
+Requerimientos para consumir nuestro servicio 
+11
+Errores frecuentes 
+12
+Estructuras de información 
+Web Checkout vía lightbox
+13
+29
+Cron Job o Tarea Programada 
+31
+Consulta o Notiﬁcación 
+32
+Información Adicional 
+34
+La información contenida en este documento es conﬁdencial y 
+propiedad de Getnet. Su uso está restringido a quienes Getnet 
+autorice y sólo para los ﬁnes deﬁnidos en el documento.
+No está permitido reproducir ni revelar su contenido, total o 
+parcialmente, sin previa autorización escrita de Getnet.
+DECLARACIÓN DEL DOCUMENTO
+Crear una transacción de venta
+Web Checkout
+
+Manual Integración API Web Checkout – Versión 2.3
+3
+Introducción
+El presente documento entrega una descripción y una guía para la integración de los 
+comercios clientes de Getnet en la plataforma de ecommerce Web Checkout, 
+solución de pagos fáciles y seguros para compras en comercio electrónico. 
+Esta integración permite realizar una comunicación directa y segura con el servicio de 
+procesamiento de pagos Web Checkout. A continuación se detallan los requerimientos 
+que el comercio debe cumplir para realizar la integración y la mensajería que se debe 
+manejar en el ﬂujo de la transacción de pago.
+Para completar la integración, el comercio deberá proporcionar algunos datos 
+adicionales a través del envío de un Formulario de Validación que se encuentra 
+disponible en Getnet.cl.
+
+Manual Integración API Web Checkout – Versión 2.3
+4
+Pasos para implementar
+web checkout
+1. 
+Solicita el producto Web Checkout a través de Getnet.cl.
+2. 
+Integra Web Checkout en tu sitio web apuntando al Ambiente de Pruebas leyendo este manual.
+3. 
+Una vez integrado, envía el Formulario de Validación disponible en getnet.cl/developers a la casilla   
+ 
+ 
+integracionweb@getnet.cl para que validemos la integración.
+4. 
+En 2 días hábiles te enviaremos el resultado de la validación, de ser positiva te enviaremos tus credenciales al  
+ 
+Ambiente de Producción y tu acceso al Panel Pagos Web. De ser negativa, te indicaremos lo que debes corregir.
+5. 
+Conﬁgura tus credenciales en Producción y comienza a vender.
+LOS PASOS PARA LA IMPLEMENTACIÓN DE WEB CHECKOUT EN TU SITIO WEB O APLICACIÓN MÓVIL
+SON LOS SIGUIENTES:
+
+Manual Integración API Web Checkout – Versión 2.3
+5
+Web Checkout
+Login:    
+7ffbb7bf1f7361b1200b2e8d74e1d76f
+Secretkey:   
+SnZP3D63n3I9dH9O
+El Endpoint o URL base:  
+https://checkout.getnet.cl
+Con Web Checkout tu sitio obtiene una URL a la cual será redireccionado el tarjeta habiente para realizar el proceso transaccional. 
+De esta manera, evitas capturar información sensible y la deﬁnición para una interfaz de un proceso de pago. 
+La API de Web Checkout está basada en REST y retorna respuestas con codiﬁcación JSON. Para hacer uso de este servicio web es 
+necesario que tu sitio se conecte usando la versión TLS 1.2. La comunicación se realiza a través del protocolo de seguridad 
+3-DSecure en su Versión 2.3 y ya está integrado en la redirección de Web Checkout. Este protocolo de seguridad es gestionado 
+completamente por Getnet.
+AMBIENTES DISPONIBLES
+Solo comercios autorizados por Getnet pueden acceder a los servicios web de la API de Web Checkout, por lo que 
+contamos con canales seguros a través de TLS 1.2 que permiten una comunicación cifrada mediante la autenticación 
+del comercio con un login y secretkey. 
+AMBIENTE DE PRUEBAS: 
+Puedes usar la API de Web Checkout en modo de prueba apuntando a este ambiente. Es importante destacar que este 
+canal, al no transar con tarjetas reales sino tarjetas de prueba, no tiene autenticación bancaria. 
+LOS ACCESOS SON:
+Endpoint o URL base
+LAS CREDENCIALES SON:
+AMBIENTE DE PRODUCCIÓN:
+A este ambiente debes apuntar cuando realices el paso a producción. Este es el ambiente real al que solo puedes 
+acceder una vez haya concluido exitosamente tu proceso de validación y te hayan sido entregadas tus credenciales 
+productivas.
+ https://checkout.test.getnet.cl
+
+Manual Integración API Web Checkout – Versión 2.3
+6
+CREDENCIALES: 
+Tus credenciales de producción (login y secretkey) son únicas para tu comercio y te serán compartidas una vez se realice la 
+validación de tu integración.
+Para mayor información visita 
+  https://www.getnet.cl/developers 
+LOGOS Y TEXTOS WEB CHECKOUT
+Cuando requieras derivar hacia Web Checkout en tu sitio web tendrás que incorporar nuestro logo y la siguiente información 
+respecto al medio de pago:
+Logo disponible en:
+https://banco.santander.cl/uploads/000/029/870/0620f532-9fc9-4248-b99e-78bae9f13e1d/original/Logo_WebCheckout_Getnet.svg
+Texto botón:     
+Texto descripción:
+Ejemplo:
+Paga seguro todo lo que necesitas con Getnet utilizando tus 
+tarjetas de crédito, débito y prepago, de todos los emisores 
+nacionales e internacionales.
+Tarjeta de crédito, débito o prepago.
+Paga seguro todo lo que necesitas con Getnet 
+utilizando tus tarjetas de crédito, débito y 
+prepago, de todos los emisores nacionales e 
+internacionales.
+Tarjeta de crédito, débito o prepago.
+
+Manual Integración API Web Checkout – Versión 2.3
+7
+Crear una transacción
+de venta
+• Se necesita la URL donde se van a enviar los datos mediante el uso del método POST (Endpoint).
+• Se debe usar JSON para el envío de los parámetros de autenticación, información del pago y datos de control.
+• El tiempo de expiración debe ser una fecha válida en formato ISO 8601. Indica el tiempo límite que tiene el usuario para  
+ 
+realizar el pago y debe ser de al menos 5 minutos superior a la fecha actual. Importante: El campo “expiration” es el  
+ 
+ 
+tiempo máximo que se da para la sesión, si un usuario no realiza la operación la sesión queda pendiente hasta expirar. El  
+ 
+tiempo recomendando es de 15 minutos.
+• La URL de retorno (returnUrl) es utilizada para redirigir al usuario una vez terminada la operación. Se recomienda enviar  
+ 
+en la URL un dato con el cual el sitio pueda identiﬁcar el registro, por ejemplo: https://mysite.com/response/{reference}.
+• Se debe conﬁgurar en tu servidor una URL de notiﬁcación usando los puertos 80 o 443 y en caso de que el pago se decline  
+ 
+o apruebe, reciba una notiﬁcación mediante POST de forma asíncrona. Importante: Esta URL de notiﬁcación debe ser  
+ 
+ 
+entregada a Getnet para su conﬁguración a través del Formulario de Validación de Web Checkout.
+• Es responsabilidad de los comercios el consumo de los servicios web bajo el método POST.
+• Cuando las transacciones son aprobadas o rechazadas por el autorizador, se presenta el comprobante de venta al tarjeta 
+ 
+habiente, sin embargo, éste no redirecciona de manera automática al comercio. 
+• El comercio, a través del método GetRequestInformation, debe consultar el estado de la transacción. Este método puede  
+ 
+ser consumido más de una vez.
+
+Manual Integración API Web Checkout – Versión 2.3
+8
+¿CÓMO FUNCIONA?
+1.  Cuando el Tarjeta Habiente (cliente) conﬁrme la compra en tu sitio web, el método createRequest debe ser
+ consumido enviando: 
+ 
+   autenticación del comercio con el objeto auth
+ 
+   Datos que se tengan sobre el cliente
+ 
+   Expiración (fecha hasta que puede ser realizado el pago)
+ 
+   URL de retorno
+ 
+   Y demás valores deﬁnidos posteriormente
+2.  Si la solicitud es procesada correctamente, el servicio crea una sesión y retorna en la respuesta:
+ 
+   Identiﬁcador requestID
+   URL de procesamiento processUrl
+3. Una vez el usuario realiza el proceso de pago y hace clic en “Regresar al comercio”, éste es enviado a la URL 
+especiﬁcada en el consumo anterior del createRequest (returnUrl). Es recomendado enviar en dicha URL un 
+parámetro GET para identiﬁcar la petición de la cual retorna el cliente.
+Ej. https://tucomercio.com/return?reference=1234
+Flujo de integración
+El comercio es notiﬁcado sobre el estado del pago
+Envía a Ecommerce 
+de Getnet la 
+información del pago 
+y la URL del retorno
+Ecommerce de Getnet 
+responde con 
+requestId y 
+processURL
+El cliente es 
+redireccionado al 
+processURL y realiza 
+el pago
+El cliente retoma al 
+comercio con la URL 
+proporcionada
+El comercio liquida
+el valor a pagar
+El usuario navega
+y prepara su compra
+Esta notiﬁcación es 
+asincrónica
+La notiﬁcación sólo
+es en estados ﬁnales
+ 
+   Información sobre el cobro a realizar
+
+Manual Integración API Web Checkout – Versión 2.3
+9
+4. De manera asincrónica, una notiﬁcación del estado de la petición será enviada a una URL deﬁnida por conﬁguración  
+ 
+del comercio. Esta URL debe ser informada por el comercio antes de pasar a producción en el Formulario de Validación.
+5. Cuando el pagador retorna a tu sitio, pueden presentarse tres casos:
+ 
+a. Pago Aprobado: El pago se realizó exitosamente y ha recibido esta información mediante la notiﬁcación del   
+ 
+ 
+punto 3. En este caso, se recomienda mostrar un mensaje al cliente informando que, por ejemplo, el pedido será  
+ 
+ 
+despachado.
+ 
+b. Pago Rechazado: El pago no se realizó exitosamente y ha recibido esta información mediante la notiﬁcación del  
+ 
+ 
+punto 3. En este caso, se recomienda mostrar un mensaje al cliente informando que el pago fue rechazado.
+ 
+c. Aún no se ha recibido información sobre el estado del pago: En este caso, es necesario que se invoque al método  
+ 
+ 
+getRequestInformation pasando como parámetro el requestID, el cual proporcionará información sobre el   
+ 
+ 
+estado del pago.
+6. Tipos de transacciones soportadas
+ 
+a. Venta: Esta transacción permite ventas con tarjetas de crédito, débito y prepago. Para el caso de tarjetas de   
+ 
+ 
+crédito emitidas en Chile, las ventas pueden ser con cuotas en las modalidades de Cuotas Emisor (ﬁnanciadas  
+ 
+ 
+por el Banco Emisor de la tarjeta) o Cuotas Comercio (ﬁnanciadas por el comercio). Para el caso de las tarjetas  
+ 
+ 
+internacionales, solo se acepta ventas sin cuotas.
+ 
+b. Anulación: Esta transacción permite realizar una anulación del monto total de una venta previamente aprobada.  
+ 
+ 
+Esta debe ser ejecutada durante el mismo día (hasta las 23:59:59). La Anulación se envía en línea al Banco   
+ 
+ 
+Emisor de la tarjeta para su autorización. Aplica para cualquier transacción efectuada con tarjeta crédito, débito  
+ 
+ 
+o prepago que se desee anular. Desde canales de e-commerce, la anulación puede realizarse en cualquier   
+ 
+ 
+momento, no hay reglas deﬁnidas para el tiempo válido para el envío de una anulación. En el Panel Administrativo  
+ 
+ 
+esta funcionalidad se denomina “Reverso transacción” y se puede identiﬁcar con el campo Referencia.
+ 
+c. Devolución: Esta transacción permite realizar una devolución total o parcial de una venta previamente aprobada  
+ 
+ 
+el día anterior. La Devolución se envía en línea al Banco Emisor de la tarjeta para su autorización, pero dependerá del  
+ 
+ 
+Banco Emisor el momento de cuando se realizará el abono al tarjetahabiente.
+ 
+ 
+Aplica para tarjeta de crédito, débito o prepago. En el Panel Administrativo esta funcionalidad se denomina   
+ 
+ 
+“Reembolsar Transacción”.
+ 
+d. Reversa: La Reversa es una transacción generada automáticamente cuando se produce un problema en la   
+ 
+ 
+comunicación y no se recibe una respuesta del tiempo límite (timeout). La Reversa se envía en línea al Banco  
+ 
+ 
+Emisor de la tarjeta para su procesamiento.
+
+Manual Integración API Web Checkout – Versión 2.3
+10
+7. Tipos de tarjetas soportadas: Getnet procesa tarjetas de las marcas Visa, Mastercard, Maestro, American Express y 
+Magna, de cualquier Banco Emisor nacional o internacional, para todos sus productos de crédito, débito y prepago.
+Importante: Es responsabilidad de los comercios el consumo de los web services bajo el método POST.
+¿QUÉ OBLIGACIONES TENGO CUANDO USO LA API DE WEB CHECKOUT?
+Controlar que no se realicen transacciones con una misma referencia. El comercio tiene la obligación de generar una 
+nueva referencia por cada transacción enviada al autorizador.
+
+Manual Integración API Web Checkout – Versión 2.3
+11
+Requerimientos para
+consumir nuestro servicio
+AUTENTICACIÓN
+La autenticación al servicio debe ser enviada sobre el objeto auth, el cual debe contener los siguientes atributos:
+     El login y el secretKey son suministrados por Getnet.
+     Esta estructura debe de ser enviada en cada petición realizada al servicio
+     El seed no puede tener diferencia de más de 5 minutos (Esta es la fecha de creación de la sesión más 5 minutos).
+ERRORES
+El servicio de WebCheckOut retorna los códigos de respuesta para la autenticación fallida en el atributo message del 
+objeto status.
+Parámetro 
+Descripción
+login 
+Identiﬁcador del sitio.
+tranKey 
+Llave transaccional, que está formada por la siguiente operación: 
+ 
+Base64(SHA-256(nonce + seed + secretkey)). El nonce dentro de la 
+ 
+operación es el original, es decir, el que no está codiﬁcado en Base64.
+nonce 
+Valor aleatorio para cada solicitud codiﬁcado en Base64.
+seed 
+Fecha actual, la cual se genera en formato ISO 8601.
+Código 
+Causa
+100 
+UsernameToken no proporcionado (Encabezado de la autorización malformado).
+101 
+Identiﬁcador de sitio no existe (Login incorrecto o no se encuentra en el ambiente).
+102 
+El hash de TranKey no coincide (Trankey incorrecto o mal formado).
+103 
+Fecha de la semilla mayor de 5 minutos.
+104 
+Sitio inactivo.
+
+Manual Integración API Web Checkout – Versión 2.3
+12
+Errores frecuentes
+MENSAJE DE ERROR AUTENTICACIÓN MAL FORMADA
+• Se presenta cuando el sistema no detecta que se esté enviando login, tranKey, seed o nonce en la estructura auth 
+enviada, también puede presentarse si se envían estos datos, pero de manera incorrecta, es decir sin el parámetro 
+content-type “application/json” de manera que el servidor interpreta la petición como texto en vez de un arreglo de 
+datos.
+• Tus servidores requieren TLSv1.2 o superior para recibir la solicitud, debido a la norma PCI. Por favor, revisa el cifrado 
+y el protocolo utilizado para conectar al servidor. Si usas Java, ten presente que solo las versiones después de la 8 
+tienen soporte completo.
+• En el proceso de autenticación nosotros revisamos el campo Created, este campo debe estar en el tiempo GMT o el 
+tiempo local usando el tiempo de zona. Si obtienes esta respuesta, se debe a que tu tiempo no es preciso con el 
+tiempo real. Nosotros solo permitimos 5 minutos de diferencia entre los tiempos. Puedes usar NTP para mantener la 
+precisión del reloj.
+• Mantén en mente que BASE64 debería ser para el raw output de la SHA256 y de acuerdo con todos los lenguajes de 
+programación este puede ser requerido para conﬁgurar esta opción, por ejemplo. En PHP base64_encode (sha256(... , 
+true)) este parametro retornaria el raw output para el SHA256 algorithm.
+MÉTODOS DE INTERFAZ DE WEBCHECKOUT
+El webservice contiene diferentes métodos donde se ejecutan operaciones de tipo solicitud - respuesta, estas requieren 
+para cada una, parámetros de ingreso que son usados por las estructuras de datos con las que se procesan información 
+para posteriormente retornar una respuesta.
+ 
+
+Manual Integración API Web Checkout – Versión 2.3
+13
+Estructuras de información
+PAGO BÁSICO
+CreateRequest
+POST
+/api/session/
+Este método permite la creación de una sesión de pago (CreateRequest) el cual solicita la creación de la sesión 
+RedirectRequest (petición de cobro) y retorna el identiﬁcador y la URL de procesamiento.
+RedirectRequest
+Estructura que contiene toda la información acerca de la transacción para ser procesada.
+
+Manual Integración API Web Checkout – Versión 2.3
+14
+ATRIBUTOS
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ e
+r
+b
+m
+o
+N
+locale  
+(Requerido)
+string 
+Deﬁnido con los códigos ISO 631-1 (language) y ISO 
+3166-1 alpha-2 (2-letras del país). Ej. es_CL
+payer 
+(Opcional) 
+Person 
+Información del ordenante, si establece este objeto, los 
+datos del pagador utilizarán esta información.
+buyer 
+(Opcional) 
+Person 
+Información del comprador en la transacción.
+payment 
+(Requerido)
+PaymentRequest
+Objeto de pago cuando necesite solicitar un cobro.
+ﬁelds 
+(Opcional) 
+NameValuePair[] 
+Información adicional relacionada con la solicitud que el 
+comercio requiere para guardar con la transacción.
+paymentMethod (Opcional) 
+string 
+Forzar el medio de pago en la interfaz de redirección, los 
+códigos aceptados son los de la lista. Si necesita más de 
+uno separarlos con coma. Ej. ATH,PSE,CR_VS
+expiration 
+(Requerido)
+dateTime 
+Fecha de expiración de una solicitud, el usuario debe 
+terminar el proceso antes de esta fecha. i.e. 
+2022-02-05T00:00:00-05:00.
+returnUrl 
+(Requerido)
+string 
+URL de retorno es utilizada para redirigir al usuario una 
+vez termina la operación de pago.
+cancelUrl 
+string 
+string 
+string 
+bool 
+bool 
+URL para retornar cuando el cliente aborte la operación.
+ipAddress 
+(Requerido)
+Dirección IP del usuario.
+userAgent 
+(Requerido)
+Agente de usuario informado por el usuario.
+skipResult 
+(Opcional)
+Si se envía el parámetro como true se omite la pantalla 
+del resultado en redirección y una vez aprobado el pago 
+regresa al comercio automáticamente.
+noBuyerFill (Opcional)
+Por defecto se llenan los datos que se piden en 
+redirección con los del comprador (buyer) enviados, si se 
+envía como true se omite este autocompletado 
+automático.
+
+Manual Integración API Web Checkout – Versión 2.3
+15
+EJEMPLO DE ESTRUCTURA DE PETICIÓN CREATEREQUEST
+{
+  "locale": "es_CL",
+    "buyer": {
+        "name": "Test",
+        "surname": "Test",
+        "email": "test@test.com",
+        "document": "11111111-9",
+        "documentType": "CLRUT",
+        "mobile": 3006108300
+    },
+    "payment": {
+        "reference": "Pruebas123",
+        "description": "Pago de pruebas",
+        "amount": {
+            "currency": "CLP",
+            "total": 1000
+        }
+    },
+    "expiration": "2022-08-05T14:42:22-05:00",
+    "ipAddress": "190.251.4.78",
+    "returnUrl": "https://dnetix.co/p2p/client",
+    "userAgent": "Mozilla/5.0, AppleWebKit/537.36, Chrome/104.0.0.0 Safari/537.36"
+}
+
+Manual Integración API Web Checkout – Versión 2.3
+16
+Retorna con la estructura que contiene la respuesta inicial desde el método createRequest.
+El servicio responde una instancia de la clase RedirectResponse. 
+Veriﬁcando el status de la respuesta, se puede determinar si se creó la session de pago.
+El servicio responde con una instancia de la clase RedirectInformation. Se puede veriﬁcar el status de la sesión a 
+través de las siguientes llamadas invocando al método GetRequestInformation:
+ATRIBUTOS
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+Status 
+Status [ ] 
+Estructura que contiene el estado de la solicitud de pago
+requestID 
+int 
+Referencia única de la sesión de pago
+processUrl 
+String 
+URL donde se redirecciona al usuario para completar el 
+proceso de pago
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ e
+r
+b
+m
+o
+N
+status 
+(Requerido)
+Status 
+Estado de esta solicitud, debe observar el estado interno 
+de cada objeto.
+request 
+(Opcional)
+RedirectRequest 
+Transaction[] 
+SubscriptionResponse 
+Información relacionada con la suscripción si esta fue 
+Información con la solicitud original.
+payment 
+(Opcional)
+Información relacionada con el pago si este fue 
+solicitado.
+subscription (Opcional)
+solicitada.
+
+Manual Integración API Web Checkout – Versión 2.3
+17
+PERSON
+Estructura que reﬂeja la información de una persona involucrada en una transacción.
+ATRIBUTOS
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+documentType (Opcional) 
+String
+Tipo de identiﬁcación del usuario pagador.
+document 
+String 
+Identiﬁcación.
+name 
+(Opcional) 
+String 
+Nombres de la persona.
+surname 
+(Opcional)       String 
+Apellidos de la persona.
+company 
+(Opcional)       String 
+Nombre de la empresa en la que trabaja o representa.
+email 
+Opcional 
+String 
+Correo electrónico de la persona.
+address 
+(Opcional)       Object
+Información completa de la dirección.
+mobile 
+(Opcional)       String  
+ 
+ 
+   Número celular, el PhoneNumberType restringe la 
+longitud del número de teléfono de la cadena a 30 
+caracteres.
+
+Manual Integración API Web Checkout – Versión 2.3
+18
+PAYMENTREQUEST
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+reference 
+(Requerido)        string
+Única referencia para la solicitud de pago.
+description 
+(Opcional)
+Descripción de la cuenta.
+amount 
+(Requerido)
+Objeto que contiene el monto a ser cobrado.
+allowPartia (Requerido)
+Deﬁne si el monto a ser cobrado puede ser parcial.
+shipping 
+(Opcional)
+Información de la persona quien recibe el producto o 
+servicio en la transacción.
+items 
+(Opcional)
+Items 
+Productos relacionados con esta solicitud de pago.
+ﬁelds 
+(Opcional)
+NameValuePair[] 
+Amount 
+string 
+bool 
+Person 
+Información adicional relacionada con la solicitud de 
+pago que el comercio requiere guardar con la 
+transacción.
+EJEMPLO DEL RESPONSE QUE SE OBTIENE
+Response
+{
+  "status": {
+    "status": "OK",
+    "reason": "PC",
+    "message": "La petición se ha procesado correctamente",
+    "date": "2022-02-05T14:48:15+00:00"
+  },
+  "requestId": "1585",
+  "processUrl": 
+"https://checkout.getnet.cl/session/1585/f86ee1f48efbecb991ab2c539879ea50"
+}
+NOTA:  En la estructura que se envía es importante tener en cuenta que no se puede enviar los siguientes caracteres  
+ 
+especiales: [], {}, |, ", ', \, *, =, ~, ¡!, ya que estos son caracteres reservados por nuestra API.
+
+GetRequestInformation
+POST
+/api/session/REQUEST_ID
+{
+  "auth": {
+    "login": "0P6NACEZn8B0THyeriWspUzcTDk9J1ui",
+    "tranKey": "+iMw2mKK+y6L7qv9yhO1pmjxPyI=",
+    "nonce": "TURJM1pHWmxPREUzT0RsbFpEUmhPVFJqTmpabFpUVTJabU14TXpoaFpHVT0=",
+    "seed": "2022-02-05T09:51:44-05:00"
+  }
+}
+Manual Integración API Web Checkout – Versión 2.3
+19
+La consulta de información de una transacción se puede dar cuando el usuario es retornado a su sitio por medio de este 
+se obtiene la información de la sesión y transacciones realizadas.
+REQUEST BODY
+Para consultar la sesión debe enviar el identiﬁcador único de la sesión de pago requestId usando el método 
+GetRequestInformation. Para este consumo también es necesario enviar en la petición la autenticación.
+Ejemplo: Endpoint de envío de información: https://checkout.getnet.cl/api/session/1585
+Request
+Response
+{ 
+    "requestId": 251623, 
+    "status": { 
+        "status": "APPROVED", 
+        "reason": "00", 
+        "message": "La petición ha sido aprobada exitosamente", 
+        "date": "2022-02-05T14:51:44+00:00" 
+    }, 
+    "request": { 
+        "locale": "es_CL", 
+        "payer": { 
+            "document": "11.111.111-1", 
+      
+"documentType": "CLRUT", 
+            "name": "Luis", 
+            "surname": "Perez", 
+            "email": "luis.perez.prueba@gmail.com", 
+            "mobile": "+56999999999" 
+
+Manual Integración API Web Checkout – Versión 2.3
+20
+        }, 
+        "payment": { 
+            "reference": "TEST_20220205_080946", 
+            "description": "Pago de pruebas", 
+            "amount": { 
+                "currency": "CLP", 
+                "total": 1000 
+            } 
+        }, 
+        "returnUrl": "https://dnetix.co/p2p/client", 
+        "ipAddress": "127.0.0.1", 
+        "userAgent": "PlacetoPay Sandbox", 
+        "expiration": "2022-02-05T09:45:46-05:00" 
+    }, 
+    "payment": [ 
+        { 
+            "amount": { 
+                "to": { 
+                    "total": 1000, 
+                    "currency": "CLP" 
+                }, 
+                "from": { 
+                    "total": 1000, 
+                    "currency": "CLP" 
+                }, 
+                "factor": 1 
+            }, 
+            "status": { 
+                "date": "2022-02-05T14:51:44+00:00", 
+                "reason": "00", 
+                "status": "APPROVED", 
+                "message": "Aprobada" 
+            }, 
+            "receipt": "303312009300", 
+            "refunded": false, 
+            "franchise": "PS_MC", 
+            "reference": "TEST_20220205_080946", 
+            "issuerName": "Bank",
+ 
+ 
+"authorization": "600236", 
+ 
+ 
+"paymentMethod": "master", 
+ 
+ 
+"processorFields": [ 
+                { V 
+                    "value": "000896",      
+
+Manual Integración API Web Checkout – Versión 2.3
+21
+En esta mensajería puedes obtener el tipo de tarjeta utilizado en la transacción, este lo obtienes desde 
+el campo “cardType”, el cual tiene los siguientes valores: C, para Crédito R, para Débito P, para Prepago
+  
+ 
+ 
+"keyword": "merchantCode", 
+ 
+ 
+ 
+"displayOn": "none" 
+                }, 
+                { 
+                    "value": "10000001", 
+                    "keyword": "terminalNumber", 
+                    "displayOn": "none" 
+                }, 
+                { 
+                    "value": "P", 
+                    "keyword": "cardType", 
+                    "displayOn": "none" 
+                }, 
+                { 
+                    "value": "555912", 
+                    "keyword": "bin", 
+                    "displayOn": "none" 
+                }, 
+                { 
+                    "value": 1, 
+                    "keyword": "installments", 
+                    "displayOn": "none" 
+                }, 
+                { 
+                    "value": "4753", 
+                    "keyword": "lastDigits", 
+                    "displayOn": "none" 
+                }, 
+                { 
+                    "value": "cbd306y665508789e150bacc84f4facd", 
+                    "keyword": "id", 
+                    "displayOn": "none" 
+                }, 
+                { 
+                    "value": "000", 
+                    "keyword": "b24", 
+                    "displayOn": "none" 
+                } 
+            ], 
+            "internalReference": 94236, 
+            "paymentMethodName": "Master" 
+        } 
+    ], 
+    "subscription": null 
+} 
+ 
+
+Manual Integración API Web Checkout – Versión 2.3
+22
+reversePayment
+POST
+/api/reverse
+Ejemplo: Endpoint de envío de información: https://checkout.getnet.cl/api/reverse
+Request
+{
+  "auth": {
+    "login": "usuarioprueba",
+    "tranKey": "jsHJzM3+XG754wXh+aBvi70D9/4=",
+    "nonce": "TTJSa05UVmtNR000TlRrM1pqQTRNV1EREprWkRVMU9EZz0=",
+    "seed": "2022-02-05T18:17:23-04:00"
+  },
+  "internalReference": "1468647381"
+}
+Permite revertir un pago aprobado con el código de referencia interna. Para poder realizar este proceso es importante 
+que la transacción haya sido realizada el mismo día y debe hacerse antes del cierre que se realiza todos los días a las 
+23:59, ya que por restricciones en las redes bancarias, si este se realiza luego de esta hora es posible que no se realice.
+ReverseResponse
+Servicio responde una instancia de la clase ReverseResponse. Se puede comprobar el status de la sesión.
+Estructura de respuesta a una solicitud de pago reversado
+STATUS
+ATRIBUTOS
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+status  
+     
+String(32) 
+Estado de una petición o pago
+reason  
+ 
+         String 
+Código del motivo proporcionado.
+message 
+ 
+         String 
+Descripción del código de razón.
+date
+DateTime 
+Fecha y hora en que se genera el estado de pago.
+
+Manual Integración API Web Checkout – Versión 2.3
+23
+{
+  "status": {
+    "status": "APPROVED",
+    "reason": "00",
+    "message": "Se ha reversado el pago correctamente",
+    "date": "2022-02-05T18:54:49-05:00"
+  },
+  "payment": {
+    "status": {
+      "status": "APPROVED",
+      "reason": "00",
+      "message": "Aprobada",
+      "date": "2022-02-05T18:54:49-05:00"
+    },
+    "internalReference": "1502099576",
+    "paymentMethod": "visa",
+    "paymentMethodName": "Visa",
+    "issuerName": "BANCO DE PRUEBAS",
+    "amount": {
+      "from": {
+        "currency": "CLP",
+        "total": -2000
+      },
+      "to": {
+        "currency": "CLP",
+        "total": -2000
+      },
+      "factor": 1
+    },
+    "authorization": "000000",
+    "reference": "123456",
+    "receipt": "1611446089",
+    "franchise": "CR_VS",
+    "refunded": false
+  }
+}
+EJEMPLO DE RESPONSE DEL REVERSE:
+Response
+
+Manual Integración API Web Checkout – Versión 2.3
+24
+ESTADO DE UNA PETICIÓN O PAGO
+OK: Petición de autenticación procesada correctamente.
+FAILED: Fallo en una petición de autenticación.
+APPROVED: Petición de pago terminada
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+internalReference   
+         
+int 
+Referencia interna en Getnet.
+reference
+string 
+Referencia enviada por el comercio para la transacción.
+paymentMethod 
+ 
+        string 
+Código del método de pago utilizado.
+paymentMethodName  
+        string 
+Nombre del método de pago utilizado.
+issuerName
+string 
+Nombre del emisor o del procesador.
+amount
+AmountConversion 
+Valor procesado.
+receipt
+string 
+Numero de recibo de la transacción.
+franchise
+string 
+Franquicia de la tarjeta utilizada.
+refunded
+boolean 
+authorization
+string 
+Código de autorización.
+processorFields  
+      
+NameValuePair[] 
+Campos adicionales del procesador.v
+STATUS
+ATRIBUTOS
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+status  
+     
+String      v 
+Estado de una petición o pago
+reason  
+ 
+         String 
+Código del motivo proporcionado.
+message 
+ 
+         String 
+Descripción del código de razón.
+date
+DateTime 
+Fecha y hora en que se genera el estado de pago.
+Estructura que contiene la información de la respuesta sobre una solicitud o pago, e informa el estado actual de la misma.
+
+Manual Integración API Web Checkout – Versión 2.3
+25
+"status": {
+        "status": "APPROVED",
+        "reason": "00",
+        "message": "La petición ha sido aprobada exitosamente",
+        "date": "2022-08-10T22:14:52+00:00"
+    },
+EJEMPLO DE LA ESTRUCTURA:
+Estado
+Descripción
+OK 
+Petición de autenticación procesada correctamente.
+FAILED 
+Fallo en una petición de autenticación.
+APPROVED 
+Petición de pago o suscripción terminada.
+REJECTED 
+Se ha declinado la transacción.
+PENDING 
+Transacción pendiente para la sesión, debe estar bloqueada hasta la resolución.
+REFUNDED 
+Reintegro de una transacción por solicitud de un tarjetahabiente al comercio.
+TRANSACTION
+ATRIBUTOS
+Estructura que contiene información sobre el proceso de pago de la transacción en Getnet.
+Nombre 
+Tipo 
+Descripción
+status  
+Status 
+Estado de la transacción.
+internalReference 
+int 
+Referencia interna en Getnet.
+reference 
+string 
+Referencia enviada por el comercio para la transacción.
+paymentMethod 
+string 
+Código del método de pago utilizado.
+paymentMethodName 
+string 
+Nombre del método de pago utilizado.
+issuerName  
+string 
+Nombre del emisor o del procesador.
+amount  
+AmountConversion 
+Estructura para deﬁnir el factor de conversión y los valores.
+receipt  
+string 
+Número de recibo de la transacción.
+franchise  
+string 
+Franquicia de la tarjeta utilizada.
+refunded 
+boolean 
+Se utiliza para deﬁnir si la transacción ha sido reversada.
+authorization  
+string 
+Código de autorización.
+processorFields 
+NameValuePair 
+Campos adicionales del procesador.
+
+Manual Integración API Web Checkout – Versión 2.3
+26
+ATRIBUTOS
+DOCUMENTTYPE
+Al momento de solicitar crear una sesión, si usa alguna de las estructuras payer, buyer o shipping deberá enviar en el atributo 
+DocumentType alguno de los siguientes códigos dependiendo del país.
+ADDRESS
+Estructura que contiene la información sobre una dirección física.
+Nombre        Tipo      Descripción
+Street 
+string Dirección física completa.
+City 
+string Nombre de la ciudad.
+State 
+string Nombre del estado coincidente con la dirección.
+postalCode string Código postal o equivalente se requiere generalmente para los países que tienen.
+Country 
+string Código internacional del país que se aplica a la dirección física según ISO 3166-1 ALPHA-2.
+phone  
+string Número telefónico.
+ATRIBUTOS
+AMOUNT
+Extiende de AmountBase y describe el contenido del valor total, incluyendo impuestos y detalles.
+Parámetro    Tipo                        Descripción
+Currency 
+String 
+De amountBase. Permite identiﬁcar la moneda en que se va realizar un pago, 
+ 
+ 
+acorde al ISO 4217 (Alphabetic).
+Total 
+Decimal 
+De amountBase. Permite identiﬁcar el monto total que se va a pagar.
+Taxes 
+TaxDetail 
+Descripción de los impuestos.
+Details 
+AmountDetail 
+Descripción del importe total.
+
+Manual Integración API Web Checkout – Versión 2.3
+27
+{
+  ...
+         "amount": {
+           "taxes": [
+                {
+                "kind": "ice",
+                "amount": 2,
+                "base": 13
+                },
+                {
+                "kind": "valueAddedTax",
+                "amount": 2,
+                "base": 13
+                }
+            ],
+            "details": [
+                {
+                "kind": "shipping",
+                "amount": 1
+                },
+                {
+                "kind": "tip",
+                "amount": 1
+                },
+                {
+                "kind": "subtotal",
+                "amount": 13
+                }
+            ],
+            "currency": "CLP",
+            "total": "10000"
+        }
+Ejemplo estructura amount
+
+Manual Integración API Web Checkout – Versión 2.3
+28
+AMOUNT
+Estructura para almacenar información sobre un impuesto.
+Nombre 
+Tipo 
+Descripción
+Kind 
+string 
+Tipo de impuesto.
+Amount 
+Interger or number or string 
+Valor del impuesto.
+Base 
+Interger or number or string 
+DETAIL
+Estructura para almacenar información sobre el valor.
+Nombre 
+Tipo 
+Descripción
+AMOUNTCONVERSION
+Estructura para deﬁnir el factor de conversión y los valores.
+ATRIBUTOS
+kind 
+string 
+Valor de clasiﬁcación, puede ser [discount, additional, vatDevolutionBase,
+ 
+ 
+shipping,handlingFee, insurance, giftWrap,subtotal, fee, tip].
+amount  
+AmountType 
+Valor discriminado.
+Nombre 
+Tipo 
+Descripción
+from 
+AmountBase 
+Monto solicitado.
+to 
+AmountBase 
+Monto procesado por la entidad.
+factor 
+Number or string Factor de conversión.
+AMOUNTBASE
+Estructura que representa una cantidad que deﬁne la moneda y el total
+Nombre 
+Tipo 
+Descripción
+currency 
+string 
+Moneda acorde al ISO 4217  
+ 
+ 
+ 
+(alphabetic code).
+Atotal  
+Number or string Valor total.
+
+Manual Integración API Web Checkout – Versión 2.3
+29
+WEB CHECKOUT VÍA LIGHTBOX
+La alternativa de utilizar Web Checkout vía lightbox en lugar de redirección permitirá que el formulario de pago de Getnet aparez-
+ca a través de un popup sobre tu sitio cada vez que el usuario presione el botón pagar. Esta modalidad permite al usuario conti-
+nuar el proceso de pago sin ser redireccionado fuera de tu sitio web.
+En el caso que se llame al servicio a través de un dispositivo móvil, el lightbox se redireccionará a una nueva página.
+Cómo integrar Web Checkout vía Lightbox
+Para importar el lightbox en tu sitio, debes utilizar la etiqueta <script> de HTML de la siguiente manera:
+              <script src="https://checkout.getnet.cl/lightbox.min.js"></script>
+Luego, crea la sesión de Web Checkout y obtén el processURL de la respuesta. Ejemplo:
+{
+            "status": {
+                        "status": "OK",
+                        "reason": "PC",
+                        "message": "La petición se ha procesado correctamente",
+                        "date": "2023-01-01T00:00:00-05:00"
+            },
+            "requestId": 123456,
+            "processUrl": " https://checkout.getnet.cl/spa/session/635091/3ad8cfb-
+ceb356920837e29f3e9fd51cf "
+}
+Posteriormente inicializa la URL utilizando la variable processUrl obtenida al crear la sesión de Web Checkout. Ejemplo:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+            <meta charset="UTF-8">
+            <title>Lightbox SDK</title>
+            <script src="https://checkout.getnet.cl/lightbox.min.js"></script>
+
+Manual Integración API Web Checkout – Versión 2.3
+30
+</head>
+<body>
+            <h1>Lightbox</h1>
+            <button id="open">Abrir Lightbox</button>
+            <script>
+                        // Abre el Lightbox al hacer click en el botón 
+                        document.getElementById('open').addEventListener('click', function () {
+                                    // Obtén la variable processUrl de la respuesta de Placeto-
+Pay
+                                    var processUrl = "https://checkout.getnet.cl/spa/ses-
+sion/635091/3ad8cfbceb356920837e29f3e9fd51cf";
+                                    // Inicializa la URL en el Lightbox SDK
+                                    P.init(processUrl);
+                        });
+            </script>
+</body>
+</html>
+
+Manual Integración API Web Checkout – Versión 2.3
+31
+Cron Job o Tarea
+Programada
+Esta es una tarea programada que se recomienda implementar, una vez cada 24 horas en ambiente de producción, por 
+medio de un script, en el cual se consulten todas las operaciones realizadas durante ese periodo en su sitio.
+Recomendación: Implementar en su sitio, pues si algo falla en el proceso de retorno y notiﬁcación, la tarea programada 
+puede ser usada como contingencia.
+Para consultar la sesión debe enviar el identiﬁcador único de la sesión de pago requestID usando el método 
+GetRequestInformation.
+Para este consumo también es necesario enviar en la petición la autenticación.
+
+Manual Integración API Web Checkout – Versión 2.3
+32
+Consulta o Notiﬁcación
+Una notiﬁcación permite informar al comercio sobre el estado de las sesiones.
+Se recomienda conﬁgurar en tu servidor una URL de notiﬁcación, usando los puertos 80 o 443 y en caso de que la sesión 
+se cancele o apruebe, reciba una notiﬁcación mediante POST.
+De manera asincrónica, una notiﬁcación del estado de la petición será enviada a una URL deﬁnida por conﬁguración del 
+comercio en Getnet.
+Nota: Para este consumo también es necesario enviar en la petición la autenticación.
+n
+ó
+ic
+p
+irc
+s
+e
+D
+ o
+p
+iT
+ o
+rt
+e
+m
+á
+r
+a
+P
+requestId 
+Int 
+Identiﬁcador único de la sesión.
+reference 
+String 
+Referencia que acompañada con el requestId permite 
+identiﬁcar la sesión de pago afectada.
+signature 
+String 
+Firma que permite validar la petición recibida.
+EJEMPLO DE LA ESTRUCTURA DE LA NOTIFICACIÓN:
+{
+  "status": {
+    "status": "APPROVED",
+    "message": "Testing notification",
+    "reason": "TT",
+    "date": "2022-03-29T16:43:54-05:00"
+  },
+  "requestId": 65488906,
+  "reference": 270656693,
+  "signature": "c12b9e8b1780effffe2dd6c27f6fe2d67dace6ce"
+}
+
+Manual Integración API Web Checkout – Versión 2.3
+33
+Al recibir la notiﬁcación su sitio debe:
+Identiﬁcar operación: Con el identiﬁcador de la sesión requestId y la referencia reference identiﬁcan la sesión 
+notiﬁcada. Con esta funcionalidad puede validar el estado de la operación notiﬁcada y conﬁrmar el estado de las 
+transacciones en su sistema.
+Validar autenticidad de la notiﬁcación: Puedes validar que se trate de una respuesta de Getnet haciendo un SHA-1  con 
+los datos requestId + status + date + secretKey.
+Si este valor coincide con el valor proporcionado por el signature, puedes autenticar la respuesta y proceder a asentar en 
+la base de datos.
+Nota: En ninguna circunstancia reveles el secretKey en ninguna parte accesible a los clientes o usuarios de su aplicación.
+Luego de obtener el estado de la sesión, puede continuar con la regla de negocio de su sitio. (Ejemplo: Si la operación es 
+aprobada, envía un correo electrónico al usuario.)
+Otra manera de validar la autenticidad de la notiﬁcación, es una vez recibida esta, consultar con el getRequestInformation el 
+estado de la transacción, de esta manera de hace una validación doble y se veriﬁca que el estado enviado en la notiﬁcación sea 
+el correcto.
+
+Manual Integración API Web Checkout – Versión 2.3
+34
+Información Adicional
+TARJETAS DE PRUEBA AMBIENTE TEST
+RENDICIÓN DE PAGOS
+Las transacciones de pago que se realizan a través del ecommerce de Getnet, son todas auto conﬁrmadas, lo que 
+Nota: Para todas considerar CVV 123, fecha expiración superior al mes/año en curso.
+signiﬁca que la información y resultado de la transacción informada en línea es deﬁnitiva. 
+Para contar con la información de los pagos, el comercio podrá consultar en el momento que requiera las transacciones 
+autorizadas en Checkout, ingresando al Portal de Comercios, en la opción “Abonos”. 
+Métodos de Pago Códigos: Esta es una lista de las franquicias disponibles en redirección.
+País 
+Franquicia 
+Método de pago 
+Descripción
+Chile 
+PS_VS 
+Visa 
+Paystudio Visa
+ 
+PS_MC 
+Mastercard 
+Paystudio Mastercard
+ 
+PS_MS 
+Maestro 
+Paystudio Maestro
+ 
+PS_AM 
+AMEX 
+Paystudio American Express
+Tipo de Tarjeta 
+Detalle 
+Comportamiento
+Visa 
+4111 *1111 *1111* 1111 
+Aprobación
+MasterCard 
+5367*6800*0000*0013 
+Rechazo
+Visa 
+4110 *7600 *0000* 0008 
+Aprobación
+Visa 
+4110 *7600* 0000 *0065 
+Rechazo
+Números de Tarjetas de Prueba en ambiente TEST.
+
+Manual Integración API Web Checkout – Versión 2.3
+35
+AUTENTICACIÓN
+Todas las solicitudes al web deben ser autenticadas con Web Services Security UsernameToken Proﬁle 1.1. La autenticación es 
+una referencia de que se debe hacer la encriptación del hash en base64 y sha256.
+Usando PasswordDigest 
+(PasswordDigest = Base64 ( SHA-256( nonce + created + secretkey ) ))
+ESTRUCTURAS DE INFORMACIÓN
+Esta sección describe cada una de las estructuras de datos usada por los métodos web services.
+CAMPOS USADOS POR TIPO DE OPERACIÓN
+Matriz con los campos disponibles para enviar por operación.
+Las convenciones son: R (requerida), O (opcional), A (recomendada), - (no aplica), R* (Es requerido, se debe enviar uno de ellos)
+ 
+Payment 
+Reverse Payment
+locale 
+O 
+-
+payer 
+O 
+-
+documentType 
+O 
+-
+document 
+O 
+-
+name 
+O 
+-
+surname 
+O 
+-
+company 
+O 
+-
+email 
+O 
+-
+address 
+O 
+-
+mobile 
+O 
+-
+buyer 
+A 
+-
+documentType 
+O 
+-
+document 
+O 
+-
+name 
+A 
+-
+surname 
+O 
+-
+company 
+O 
+-
+email 
+A 
+-
+address 
+O 
+-
+mobile 
+O 
+-
+payment 
+R 
+-
+ 
+ 
+ 
+
+Manual Integración API Web Checkout – Versión 2.3
+36
+ 
+Payment 
+Reverse Payment
+reference 
+R 
+-
+description 
+R 
+-
+amount 
+R 
+-
+currency 
+R 
+-
+total 
+R 
+-
+taxes 
+O 
+-
+details 
+O 
+-
+allowPartial 
+- 
+-
+shipping 
+O 
+-
+documentType 
+O 
+-
+document 
+O 
+-
+name 
+O 
+-
+surname 
+O 
+-
+Company 
+O 
+-
+email 
+O 
+-
+address 
+O 
+-
+mobile 
+O 
+-
+items 
+O 
+-
+ﬁelds 
+O 
+-
+dueDate 
+- 
+-
+notiﬁcationUrl 
+- 
+-
+subscription 
+- 
+-
+reference 
+- 
+-
+description 
+- 
+-
+ﬁelds 
+- 
+-
+ﬁelds 
+O 
+-
+keyword 
+O 
+-
+value 
+O 
+-
+displayOn 
+O 
+-
+paymentMethod 
+O 
+-
+expiration 
+R 
+-
+returnUrl 
+R 
+-
+cancelUrl 
+O 
+-
+ipAddress 
+R 
+-
+userAgent 
+R 
+-
+requestId 
+- 
+R
+Instrument 
+- 
+-
+token 
+- 
+-
+token 
+- 
+-
+subtoken 
+- 
+-
+instalments 
+- 
+-
+cvv 
+- 
+-
+ 
+ 
+ 
+
+Manual Integración API Web Checkout – Versión 2.3
+37
+CÓDIGOS DE RESPUESTA DE TRANSACCIONES
+Código 
+Motivo
+00 
+Aprobada.
+01 
+Negada. Establecimiento debe comunicarse con el centro de autorizaciones.
+02 
+Negada. Contactar Banco emisor por condiciones especiales.
+03 
+Negada. Comercio no habilitado.
+04 
+Negada. Retener/Capturar con orden de retención.
+05 
+Negada. Puede ser tarjeta bloqueada o timeout.
+12 
+Negada. Mala selección del tipo de cuenta y asociación de un tipo de tarjeta errado.
+13 
+Negada. Valor del avance es inválido.
+14 
+Negada. Tarjeta bloqueada por la Entidad Financiera.
+30 
+Formato erróneo.
+41 
+Tarjeta perdida.
+43 
+Tarjeta extraviada.
+46 
+Cuenta cerrada.
+51 
+Negada. No tiene fondos suﬁcientes esta tarjeta.
+54 
+Negada. Tarjeta vencida.
+57 
+Negada. Transacción no permitida por el emisor.
+58 
+Negada. Transacción inválida.
+61 
+Negada. Monto excede el máximo deﬁnido por la Entidad Financiera en el archivo de tarjetahabientes.
+62 
+Negada. Tarjeta inhabilitada por la Entidad Financiera.
+63 
+Violación de seguridad.
+89 
+Negada. Inválido el ruteo de la transacción por el tipo de tarjeta.
+91 
+Negada. No es posible autorizar.
+92 
+Negada. Puede ser tarjeta bloqueada o timeout.
+94 
+Negada. Transacción duplicada.
+96 
+Negada. No se pudo procesar la transacción.
+?2 
+Transacción declinada por políticas de control de riesgo.
+BN 
+BIN de la tarjeta no es soportado por políticas de control de riesgo.
+XR 
+Falla en la lectura de la respuesta.
+X3 
+Error de comunicación con el proveedor, por favor intenta de nuevo en un momento.
+XC 
+Código de moneda inválido o no soportado.
+
+Manual Integración API Web Checkout – Versión 2.3
+38
+LONGITUD DE LOS CAMPOS
+Parámetros 
+Tipo 
+Longitud
+reference 
+string 
+32
+description 
+string 
+255
+expirationDate 
+fecha 
+AAAA-MM-DD
+notiﬁcationUrl 
+string 
+255
+keyword 
+string 
+60
+total 
+string 
+30
+name 
+string 
+60
+surname 
+string 
+60
+document 
+string 
+12
+typeDocument 
+string 
+2-3
+mobile 
+string 
+30
+type 
+string 
+20
+amount 
+number 
+9
+base 
+number 
+9
+sku 
+String 
+12
+category 
+String 
+30
+cantity 
+String 
+12
+taxes 
+number 
+9
+street 
+String 
+50
+city 
+string 
+50
+country 
+string 
+2
+postalCode 
+string 
+20
+phone 
+string 
+30
+state 
+string 
+30
+divisa 
+string 
+3
+total 
+number 
+9
+paymentMethod 
+string 
+5
+returnUrl 
+string 
+255
+cancelUrl 
+string 
+255
+ipAddress 
+string 
+16
+userAgent 
+string 
+255
+skipResult 
+bool 
+true or false
+noBuyerFill 
+bool 
+true or false
+currency 
+string 
+4
+
