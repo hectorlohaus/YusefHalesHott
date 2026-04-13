@@ -42,6 +42,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${inter.variable} ${notoSerif.variable} font-body bg-background text-on-background selection:bg-secondary-fixed selection:text-on-secondary-fixed antialiased flex flex-col min-h-screen`}
+        suppressHydrationWarning
       >
         <Header />
         <main className="flex-grow flex flex-col">

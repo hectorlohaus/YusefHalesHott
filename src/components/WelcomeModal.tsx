@@ -20,10 +20,10 @@ export default function WelcomeModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-50 flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[100] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
       {/* Modal Container */}
       <div
-        className="relative w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl bg-surface-container-lowest flex flex-col md:flex-row animate-in zoom-in-95 duration-300"
+        className="relative w-full max-w-5xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto no-scrollbar rounded-xl shadow-2xl bg-surface-container-lowest flex flex-col md:flex-row animate-in zoom-in-95 duration-300"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -31,14 +31,14 @@ export default function WelcomeModal() {
         {/* Close Button (Absolute) */}
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute top-6 right-6 z-20 p-2 text-on-surface-variant hover:text-on-surface transition-colors"
+          className="absolute top-4 right-4 md:top-6 md:right-6 z-20 p-2 text-on-surface-variant hover:text-on-surface transition-colors bg-surface-container/50 md:bg-transparent rounded-full backdrop-blur-sm md:backdrop-blur-none"
           aria-label="Cerrar modal"
         >
           <span className="material-symbols-outlined text-2xl">close</span>
         </button>
 
         {/* Left Column: Visual & Identity */}
-        <div className="relative w-full md:w-5/12 min-h-[300px] md:min-h-full overflow-hidden bg-primary-container">
+        <div className="relative w-full md:w-5/12 min-h-[180px] sm:min-h-[220px] md:min-h-full overflow-hidden bg-primary-container shrink-0">
           <Image
             className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay"
             alt="Pluma fuente sobre documento legal"
@@ -46,15 +46,15 @@ export default function WelcomeModal() {
             fill
             sizes="(max-width: 768px) 100vw, 42vw"
           />
-          <div className="relative h-full flex flex-col justify-between p-10 z-10">
+          <div className="relative h-full flex flex-col justify-between p-6 sm:p-8 md:p-10 z-10">
             <div>
-              <h1 id="modal-title" className="font-headline text-4xl md:text-5xl text-on-primary italic leading-tight tracking-tight">
+              <h1 id="modal-title" className="font-headline text-3xl sm:text-4xl md:text-5xl text-on-primary italic leading-tight tracking-tight">
                 Notaría Yusef<br />Hales Hott
               </h1>
-              <div className="w-12 h-1 bg-secondary mt-6"></div>
+              <div className="w-12 h-1 bg-secondary mt-4 md:mt-6"></div>
             </div>
-            <div className="mt-auto">
-              <p className="text-on-primary-container text-sm leading-relaxed max-w-xs font-light italic">
+            <div className="mt-6 md:mt-auto hidden sm:block">
+              <p className="text-on-primary-container text-xs sm:text-sm leading-relaxed max-w-xs font-light italic">
                 "Excelencia jurídica y fe pública con el sello de distinción que su gestión merece."
               </p>
             </div>
@@ -62,7 +62,7 @@ export default function WelcomeModal() {
         </div>
 
         {/* Right Column: Information & Actions */}
-        <div className="w-full md:w-7/12 p-8 md:p-12 lg:p-16 flex flex-col gap-10 bg-surface-container-lowest">
+        <div className="w-full md:w-7/12 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col gap-8 md:gap-10 bg-surface-container-lowest">
           {/* Schedule Section */}
           <section>
             <h3 className="font-label text-xs font-bold tracking-widest text-on-surface-variant mb-8 uppercase">Horarios de Atención</h3>
