@@ -6,7 +6,7 @@ export default async function TransparenciaPage() {
   const supabase = await createClient();
   const { data: empleados, error } = await supabase
     .from('usuarios')
-    .select('nombre, rut, rol, sueldo')
+    .select('nombre, rol, sueldo')
     .eq('activo', true)
     .order('rol', { ascending: false })
     .order('nombre', { ascending: true });
@@ -74,7 +74,6 @@ export default async function TransparenciaPage() {
               <thead>
                 <tr className="bg-surface-container-low">
                   <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Nombre Completo</th>
-                  <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">RUT</th>
                   <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Cargo / Función</th>
                   <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant text-right">Remuneración Bruta</th>
                 </tr>
@@ -96,7 +95,6 @@ export default async function TransparenciaPage() {
                   return (
                     <tr key={index} className="hover:bg-surface-container-low/40 transition-colors">
                       <td className="px-8 py-6 font-medium text-on-surface">{empleado.nombre}</td>
-                      <td className="px-8 py-6 text-on-surface-variant font-mono text-sm">{empleado.rut || 'No Registrado'}</td>
                       <td className="px-8 py-6 text-on-surface-variant">{funcion}</td>
                       <td className="px-8 py-6 text-right font-headline font-bold text-secondary text-lg">
                         ${empleado.sueldo?.toLocaleString('es-CL') || 0}
