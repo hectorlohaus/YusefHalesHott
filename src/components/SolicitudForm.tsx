@@ -114,46 +114,62 @@ function AddressField({ value, onChange }: { value: string; onChange: (v: string
 
   // Create a fresh session token (called once per search session)
   const newToken = useCallback(() => {
-    if (window.google?.maps?.places?.AutocompleteSessionToken) {
-      sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+    try {
+      if (window.google?.maps?.places?.AutocompleteSessionToken) {
+        sessionTokenRef.current = new window.google.maps.places.AutocompleteSessionToken();
+      }
+    } catch (e) {
+      console.warn("Google Maps Token Error:", e);
     }
   }, []);
 
   // Initialize AutocompleteService lazily
   const getService = useCallback(() => {
-    if (!serviceRef.current && window.google?.maps?.places?.AutocompleteService) {
-      serviceRef.current = new window.google.maps.places.AutocompleteService();
+    try {
+      if (!serviceRef.current && window.google?.maps?.places?.AutocompleteService) {
+        serviceRef.current = new window.google.maps.places.AutocompleteService();
+      }
+      return serviceRef.current;
+    } catch (e) {
+      console.warn("Google Maps Service Error:", e);
+      return null;
     }
-    return serviceRef.current;
   }, []);
 
   // Fetch predictions — debounced, with session token
   const fetchPredictions = useCallback(
     (input: string) => {
-      const svc = getService();
-      if (!svc || !input.trim()) { setSuggestions([]); setOpen(false); return; }
-      if (!sessionTokenRef.current) newToken(); // Create token on first keystroke of session
+      try {
+        const svc = getService();
+        if (!svc || !input.trim()) { setSuggestions([]); setOpen(false); return; }
+        if (!sessionTokenRef.current) newToken(); // Create token on first keystroke of session
 
-      setLoading(true);
-      svc.getPlacePredictions(
-        {
-          input,
-          componentRestrictions: { country: 'cl' },
-          sessionToken: sessionTokenRef.current!,
-          types: ['address'],
-        },
-        (predictions: GMapsPrediction[] | null, status: string) => {
-          setLoading(false);
-          const OK = window.google?.maps?.places?.PlacesServiceStatus?.OK ?? 'OK';
-          if (status === OK && predictions) {
-            setSuggestions(predictions);
-            setOpen(true);
-          } else {
-            setSuggestions([]);
-            setOpen(false);
+        setLoading(true);
+        svc.getPlacePredictions(
+          {
+            input,
+            componentRestrictions: { country: 'cl' },
+            sessionToken: sessionTokenRef.current || undefined,
+            types: ['address'],
+          },
+          (predictions: GMapsPrediction[] | null, status: string) => {
+            setLoading(false);
+            const OK = window.google?.maps?.places?.PlacesServiceStatus?.OK ?? 'OK';
+            if (status === OK && predictions) {
+              setSuggestions(predictions);
+              setOpen(true);
+            } else {
+              setSuggestions([]);
+              setOpen(false);
+            }
           }
-        }
-      );
+        );
+      } catch (e) {
+        console.warn("Google Maps Predictions Error:", e);
+        setLoading(false);
+        setSuggestions([]);
+        setOpen(false);
+      }
     },
     [getService, newToken]
   );
@@ -167,31 +183,39 @@ function AddressField({ value, onChange }: { value: string; onChange: (v: string
 
   // Select a suggestion: call PlacesService.getDetails with SAME token, then discard token
   const handleSelect = (prediction: GMapsPrediction) => {
-    if (!window.google?.maps?.places?.PlacesService) {
+    try {
+      if (!window.google?.maps?.places?.PlacesService) {
+        onChange(prediction.description);
+        setSuggestions([]);
+        setOpen(false);
+        sessionTokenRef.current = null; // discard — start fresh next time
+        return;
+      }
+
+      const attrContainer = document.createElement('div');
+      const placesService = new window.google.maps.places.PlacesService(attrContainer);
+
+      placesService.getDetails(
+        {
+          placeId: prediction.place_id,
+          fields: ['formatted_address', 'address_components', 'geometry'],
+          sessionToken: sessionTokenRef.current || undefined, // Same token closes the billing session
+        },
+        (place, status) => {
+          const OK = window.google?.maps?.places?.PlacesServiceStatus?.OK ?? 'OK';
+          onChange(status === OK && place?.formatted_address ? place.formatted_address : prediction.description);
+          setSuggestions([]);
+          setOpen(false);
+          sessionTokenRef.current = null; // Session complete — next search creates a new token
+        }
+      );
+    } catch (e) {
+      console.warn("Google Maps Select Error:", e);
       onChange(prediction.description);
       setSuggestions([]);
       setOpen(false);
-      sessionTokenRef.current = null; // discard — start fresh next time
-      return;
+      sessionTokenRef.current = null;
     }
-
-    const attrContainer = document.createElement('div');
-    const placesService = new window.google.maps.places.PlacesService(attrContainer);
-
-    placesService.getDetails(
-      {
-        placeId: prediction.place_id,
-        fields: ['formatted_address', 'address_components', 'geometry'],
-        sessionToken: sessionTokenRef.current!, // Same token closes the billing session
-      },
-      (place, status) => {
-        const OK = window.google?.maps?.places?.PlacesServiceStatus?.OK ?? 'OK';
-        onChange(status === OK && place?.formatted_address ? place.formatted_address : prediction.description);
-        setSuggestions([]);
-        setOpen(false);
-        sessionTokenRef.current = null; // Session complete — next search creates a new token
-      }
-    );
   };
 
   // Close dropdown on outside click

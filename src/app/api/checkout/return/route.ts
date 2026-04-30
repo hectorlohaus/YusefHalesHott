@@ -3,6 +3,14 @@ import { createClient } from '@/lib/supabase/server';
 import { generateGetnetAuth } from '@/lib/getnet';
 
 export async function GET(request: NextRequest) {
+  return handleReturn(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleReturn(request);
+}
+
+async function handleReturn(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const solicitudId = searchParams.get('solicitudId');
 
@@ -15,7 +23,7 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
 
   const { data: solicitud } = await supabase
-        .from('solicitudes')
+    .from('solicitudes')
     .select('id, getnet_session_id')
     .eq('id', solicitudId)
     .single();
@@ -28,20 +36,35 @@ export async function GET(request: NextRequest) {
   const endpoint = process.env.GETNET_ENDPOINT || 'https://checkout.test.getnet.cl';
 
   try {
-    // Request status from Getnet
     const payload = { auth };
-    const res = await fetch(`${endpoint}/api/session/${solicitud.getnet_session_id}`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'User-Agent': 'NotariaTraiguen/1.0'
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(20000)
-    });
+    let status = 'PENDING';
+    let data;
+    
+    // Check up to 4 times (delay of 0s, 2s, 2s, 2s) to avoid race conditions 
+    // where Getnet backend hasn't updated the status by the time the user is redirected.
+    for (let i = 0; i < 4; i++) {
+      const res = await fetch(`${endpoint}/api/session/${solicitud.getnet_session_id}`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'User-Agent': 'NotariaTraiguen/1.0',
+          'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(20000)
+      });
 
-    const data = await res.json();
-    const status = data.status?.status; // 'APPROVED', 'REJECTED', 'PENDING'
+      data = await res.json();
+      status = data.status?.status; // 'APPROVED', 'REJECTED', 'PENDING'
+      
+      if (status !== 'PENDING') {
+        break; // Status is definitive, break the loop
+      }
+      
+      if (i < 3) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
 
     if (status === 'APPROVED') {
       await supabase
@@ -54,9 +77,8 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.redirect(`${appUrl}/pago/exito?solicitudId=${solicitud.id}`);
     } else {
-      // It might be rejected or pending, or failed
       await supabase
-            .from('solicitudes')
+        .from('solicitudes')
         .update({
           estado_pago: status === 'PENDING' ? 'pendiente' : 'fallido'
         })
