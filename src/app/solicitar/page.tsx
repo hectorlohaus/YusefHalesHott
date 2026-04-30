@@ -22,7 +22,7 @@ export default async function SolicitarPage(
     <main className="flex-grow pt-24 pb-16 px-6 md:px-12 flex justify-center items-start min-h-screen bg-surface">
       {/* Google Maps Places API */}
       <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&language=es`}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&language=es&loading=async`}
         strategy="lazyOnload"
         id="google-maps"
       />

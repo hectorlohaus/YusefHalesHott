@@ -64,10 +64,10 @@ export default function ServiceSearch({
     return matchesSearch && matchesFilter;
   });
 
-  const [visibleCount, setVisibleCount] = useState(9);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   useEffect(() => {
-    setVisibleCount(9);
+    setVisibleCount(3);
   }, [searchTerm, filterType]);
 
   const visibleItems = filtered.slice(0, visibleCount);
@@ -246,7 +246,7 @@ export default function ServiceSearch({
                   <span className="material-symbols-outlined text-secondary accordion-icon transition-transform duration-300">expand_more</span>
                 </div>
                 <div className="accordion-content mt-4 text-on-surface-variant text-sm leading-relaxed hidden border-t border-outline-variant/10 pt-4">
-                  Los trámites se pagan de forma online a través de nuestra plataforma web de pagos seguros (Webpay) tras generar su solicitud, permitiéndole ahorrar tiempo al iniciar la gestión de su documento directamente desde nuestro portal.
+                  Los trámites se pagan de forma online a través de nuestra plataforma web de pagos seguros (Getnet) tras generar su solicitud, permitiéndole ahorrar tiempo al iniciar la gestión de su documento directamente desde nuestro portal.
                 </div>
               </div>
               

@@ -29,10 +29,11 @@ async function handleReturn(request: NextRequest) {
     }
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const appUrl = (siteUrl && !siteUrl.includes('localhost')) ? siteUrl : request.nextUrl.origin;
 
   if (!solicitudId && !requestId && !reference) {
-    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=missing_identifiers`);
+    return NextResponse.redirect(new URL(`${appUrl}/pago/fallo?reason=missing_identifiers`), 303);
   }
 
   const supabase = await createClient();
@@ -47,24 +48,26 @@ async function handleReturn(request: NextRequest) {
     const shortId = reference.replace('REQ-', '');
     query = query.ilike('id', `${shortId}%`);
   } else {
-    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=invalid_reference`);
+    return NextResponse.redirect(new URL(`${appUrl}/pago/fallo?reason=invalid_reference`), 303);
   }
 
   const { data: solicitud, error: solError } = await query.maybeSingle();
 
   if (solError || !solicitud || !solicitud.getnet_session_id) {
-    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=not_found`);
+    return NextResponse.redirect(new URL(`${appUrl}/pago/fallo?reason=not_found`), 303);
   }
 
-  const auth = generateGetnetAuth();
   const endpoint = process.env.GETNET_ENDPOINT || 'https://checkout.test.getnet.cl';
 
   try {
-    const payload = { auth };
     let status = 'PENDING';
     let data;
     
     for (let i = 0; i < 5; i++) {
+      // Regenerate auth for each request to avoid nonce replay errors
+      const auth = generateGetnetAuth();
+      const payload = { auth };
+      
       const res = await fetch(`${endpoint}/api/session/${solicitud.getnet_session_id}`, {
         method: 'POST',
         headers: { 
@@ -97,7 +100,7 @@ async function handleReturn(request: NextRequest) {
         })
         .eq('id', solicitud.id);
 
-      return NextResponse.redirect(`${appUrl}/pago/exito?solicitudId=${solicitud.id}`);
+      return NextResponse.redirect(new URL(`${appUrl}/pago/exito?solicitudId=${solicitud.id}`), 303);
     } else {
       await supabase
         .from('solicitudes')
@@ -106,11 +109,11 @@ async function handleReturn(request: NextRequest) {
         })
         .eq('id', solicitud.id);
         
-      return NextResponse.redirect(`${appUrl}/pago/fallo?solicitudId=${solicitud.id}&status=${status}`);
+      return NextResponse.redirect(new URL(`${appUrl}/pago/fallo?solicitudId=${solicitud.id}&status=${status}`), 303);
     }
 
   } catch (err) {
     console.error("Error verifying payment", err);
-    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=network_error`);
+    return NextResponse.redirect(new URL(`${appUrl}/pago/fallo?reason=network_error`), 303);
   }
 }

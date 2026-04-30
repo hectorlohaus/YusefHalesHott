@@ -33,7 +33,9 @@ export async function GET(request: NextRequest) {
   const expiration = new Date();
   expiration.setMinutes(expiration.getMinutes() + 15);
 
-  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin;
+  // Prefer request.nextUrl.origin over localhost for mobile testing
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const appUrl = (siteUrl && !siteUrl.includes('localhost')) ? siteUrl : request.nextUrl.origin;
   const returnUrl = `${appUrl}/api/checkout/return?solicitudId=${solicitud.id}`;
 
   const payload = {

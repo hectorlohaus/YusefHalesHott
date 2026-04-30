@@ -540,7 +540,7 @@ export default function SolicitudesManager({ initialSolicitudes, servicios = [],
                 <div>
                   <label className="text-sm font-bold text-slate-700 block mb-2">Método de Pago *</label>
                   <select required name="metodo_pago" className="w-full text-sm sm:text-base bg-slate-50 border-slate-300 rounded-lg py-2.5 px-3 focus:bg-white focus:border-[#005ab4] focus:ring-[#005ab4] transition-colors cursor-pointer">
-                    <option value="getnet">💳 Pago en Línea (Webpay / Getnet)</option>
+                    <option value="getnet">💳 Pago en Línea (Getnet)</option>
                     <option value="transferencia">🏦 Transferencia Bancaria</option>
                     <option value="getnet_fisico">📠 POS Local Físico (Getnet)</option>
                   </select>
@@ -667,7 +667,7 @@ export default function SolicitudesManager({ initialSolicitudes, servicios = [],
                   
                   <div>
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 block">1. Estado del Pago</label>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Método Elegido: <span className="text-slate-700 bg-slate-100 px-2 py-0.5 rounded">{selectedDoc.metodo_pago === 'getnet' ? '💳 Webpay / Getnet' : selectedDoc.metodo_pago === 'transferencia' ? '🏦 Transferencia' : 'Otro / No indicado'}</span></p>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Método Elegido: <span className="text-slate-700 bg-slate-100 px-2 py-0.5 rounded">{selectedDoc.metodo_pago === 'getnet' ? '💳 Getnet' : selectedDoc.metodo_pago === 'transferencia' ? '🏦 Transferencia' : 'Otro / No indicado'}</span></p>
 
                     <select 
                       value={selectedDoc.estado_pago}
@@ -683,7 +683,7 @@ export default function SolicitudesManager({ initialSolicitudes, servicios = [],
                     </select>
                     {selectedDoc.getnet_session_id && selectedDoc.estado_pago === 'pagado' && (
                       <p className="text-[10px] text-emerald-600 font-bold mt-2 bg-emerald-100 p-2 rounded border border-emerald-200">
-                        🔒 Pago realizado por Webpay/Getnet. Validado automáticamente.
+                        🔒 Pago realizado por Getnet. Validado automáticamente.
                       </p>
                     )}
                   </div>

@@ -32,10 +32,10 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
   const [active, setActive] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [visibleCount, setVisibleCount] = useState(9);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   useEffect(() => {
-    setVisibleCount(9);
+    setVisibleCount(3);
   }, [active]);
 
   const filtered = servicios.filter((s) =>
