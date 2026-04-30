@@ -336,7 +336,7 @@ export default function EmpleadosManager({ initialEmpleados, userRole }: { initi
                       required
                       type="email"
                       name="email"
-                      placeholder="Ej: juan.perez@notaria.cl"
+                      placeholder="Ej: juan.perez@gmail.com"
                       className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all"
                     />
                   </div>

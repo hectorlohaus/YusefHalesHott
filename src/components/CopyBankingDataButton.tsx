@@ -10,7 +10,7 @@ Cuenta Corriente
 123456789
 76.123.456-7
 Notaría y Conservador Traiguén
-pagos@notariatraiguen.cl
+notaria.conservador.traiguen@gmail.com
 $${amount.toLocaleString('es-CL')}
 #${id.substring(0,8).toUpperCase()}`;
 

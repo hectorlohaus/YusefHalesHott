@@ -51,7 +51,7 @@ export default function LoginForm() {
             type="email"
             id="email"
             name="email"
-            placeholder="usuario@notaria.cl"
+            placeholder="usuario@gmail.com"
             className="w-full bg-slate-50 border border-slate-200 px-4 py-3.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005ab4]/20 focus:border-[#005ab4] transition-all font-body text-slate-900 placeholder:text-slate-300 text-sm"
           />
           <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">

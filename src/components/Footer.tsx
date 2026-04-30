@@ -52,7 +52,7 @@ export default function Footer() {
             Errazuriz N°418, 4730334 Traiguen, Traiguén, Araucanía
           </a>
           <a href="tel:+56443051909" className="text-[#fe932c] font-medium text-sm hover:underline block mb-1">44 305 1909</a>
-          <p className="text-slate-400 text-sm mt-1 italic">contacto@notariatraiguen.cl</p>
+          <p className="text-slate-400 text-sm mt-1 italic">notaria.conservador.traiguen@gmail.com</p>
         </div>
       </div>
       <div className="max-w-screen-xl mx-auto px-8 mt-20 pt-8 border-t border-slate-900/50 text-center">

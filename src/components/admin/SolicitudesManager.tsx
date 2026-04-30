@@ -651,7 +651,7 @@ export default function SolicitudesManager({ initialSolicitudes, servicios = [],
                   <div>
                     <h4 className="text-sm font-bold text-amber-900 mb-1">Recepción de Archivos</h4>
                     <p className="text-xs text-amber-800 leading-relaxed">
-                      Busca los documentos en el correo <strong>tramites@notariatraiguen.cl</strong> referenciando el código <span className="font-mono bg-white px-1 py-0.5 rounded text-amber-900 select-all border border-amber-300">#{selectedDoc.codigo || selectedDoc.id.substring(0,8).toUpperCase()}</span>
+                      Busca los documentos en el correo <strong>notaria.conservador.traiguen@gmail.com</strong> referenciando el código <span className="font-mono bg-white px-1 py-0.5 rounded text-amber-900 select-all border border-amber-300">#{selectedDoc.codigo || selectedDoc.id.substring(0,8).toUpperCase()}</span>
                     </p>
                   </div>
                 </div>

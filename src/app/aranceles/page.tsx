@@ -71,7 +71,7 @@ export default async function ArancelesPage() {
             <span className="material-symbols-outlined text-secondary">support_agent</span> Soporte Presupuestario
           </h4>
           <p className="text-sm text-on-surface-variant leading-relaxed">
-            Si requiere un presupuesto formal para una empresa o trámite múltiple, contáctenos a <span className="text-secondary font-medium">contacto@notariatraiguen.cl</span> indicando el detalle de su requerimiento.
+            Si requiere un presupuesto formal para una empresa o trámite múltiple, contáctenos a <span className="text-secondary font-medium">notaria.conservador.traiguen@gmail.com</span> indicando el detalle de su requerimiento.
           </p>
         </div>
       </footer>

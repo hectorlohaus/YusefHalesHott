@@ -272,12 +272,12 @@ export default async function EstadoSolicitudPage(
                     <span className="material-symbols-outlined text-slate-500 group-hover:text-secondary group-hover:translate-x-1 transition-all">chevron_right</span>
                   </a>
 
-                  <a href="mailto:contacto@notariatraiguen.cl" className="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all mt-2 group border border-white/10 hover:border-secondary/50">
+                  <a href="mailto:notaria.conservador.traiguen@gmail.com" className="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all mt-2 group border border-white/10 hover:border-secondary/50">
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-secondary ml-1">mail</span>
                       <div className="text-left">
                         <span className="block text-[10px] text-slate-400 font-label tracking-widest uppercase mb-0.5">Correo Electrónico</span>
-                        <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors truncate">contacto@notariatraiguen.cl</span>
+                        <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors truncate">notaria.conservador.traiguen@gmail.com</span>
                       </div>
                     </div>
                     <span className="material-symbols-outlined text-slate-500 group-hover:text-secondary group-hover:translate-x-1 transition-all">chevron_right</span>

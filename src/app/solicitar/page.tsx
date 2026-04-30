@@ -46,7 +46,7 @@ export default async function SolicitarPage(
               <div>
                 <h3 className="font-headline text-lg font-bold text-on-surface mb-1">Envío de Documentos</h3>
                 <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-                  Una vez completada la solicitud, envíe sus documentos digitalizados a <strong className="text-secondary hover:underline">tramites@notariatraiguen.cl</strong> adjuntando el RUT del solicitante para agilizar todo el proceso.
+                  Una vez completada la solicitud, envíe sus documentos digitalizados a <strong className="text-secondary hover:underline">notaria.conservador.traiguen@gmail.com</strong> adjuntando el RUT del solicitante para agilizar todo el proceso.
                 </p>
               </div>
             </div>

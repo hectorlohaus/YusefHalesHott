@@ -94,7 +94,7 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="text-2xl font-bold font-headline text-on-surface mb-4">8. Contacto con el Delegado de Privacidad</h2>
           <p className="leading-relaxed">
-            Para el ejercicio libre y sin costo de cualquier facultad descrita u otras consultas, le invitamos a escribirnos a <strong className="text-on-surface bg-surface-container-high px-1 rounded">contacto@notariatraiguen.cl</strong> o comunicándose a nuestro soporte en horario hábil al teléfono oficial: <strong className="text-on-surface">+56 44 305 1909</strong>.
+            Para el ejercicio libre y sin costo de cualquier facultad descrita u otras consultas, le invitamos a escribirnos a <strong className="text-on-surface bg-surface-container-high px-1 rounded">notaria.conservador.traiguen@gmail.com</strong> o comunicándose a nuestro soporte en horario hábil al teléfono oficial: <strong className="text-on-surface">+56 44 305 1909</strong>.
           </p>
         </section>
       </article>

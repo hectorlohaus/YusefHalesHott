@@ -131,14 +131,14 @@ export default function WelcomeModal({ horarios }: { horarios?: any }) {
                 <span className="material-symbols-outlined text-outline group-hover:text-white transition-all group-hover:translate-x-1 shrink-0 ml-2">arrow_forward</span>
               </a>
               {/* Email CTA */}
-              <a className="group flex items-center justify-between p-4 rounded-xl border border-outline-variant/15 hover:bg-primary-container transition-all duration-300" href="mailto:contacto@notariatraiguen.cl" target="_blank" rel="noopener noreferrer">
+              <a className="group flex items-center justify-between p-4 rounded-xl border border-outline-variant/15 hover:bg-primary-container transition-all duration-300" href="mailto:notaria.conservador.traiguen@gmail.com" target="_blank" rel="noopener noreferrer">
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-surface-container-highest group-hover:bg-white/10 transition-colors">
                     <span className="material-symbols-outlined text-on-surface group-hover:text-white transition-colors">mail</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[10px] text-on-surface-variant group-hover:text-white/80 font-bold tracking-widest transition-colors uppercase truncate">Correo Electrónico</p>
-                    <p className="text-lg font-headline text-on-surface group-hover:text-white transition-colors break-all">contacto@notariatraiguen.cl</p>
+                    <p className="text-lg font-headline text-on-surface group-hover:text-white transition-colors break-all">notaria.conservador.traiguen@gmail.com</p>
                   </div>
                 </div>
                 <span className="material-symbols-outlined text-outline group-hover:text-white transition-all group-hover:translate-x-1 shrink-0 ml-2">arrow_forward</span>

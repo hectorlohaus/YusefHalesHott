@@ -100,7 +100,7 @@ export default async function TransferenciaInstruccionesPage(props: { searchPara
                 <div className="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-sm shrink-0 shadow-sm shadow-secondary/30">3</div>
                 <div>
                   <h3 className="font-bold text-sm text-secondary font-body">Envíe por Correo <span className="text-on-surface ml-1">(Paso Final)</span></h3>
-                  <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">Envíe todo a <strong className="text-on-surface bg-surface-container-high px-1 py-0.5 rounded">pagos@notariatraiguen.cl</strong> mencionando el código <strong className="text-on-surface font-mono">#{codigo}</strong> en el asunto.</p>
+                  <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">Envíe todo a <strong className="text-on-surface bg-surface-container-high px-1 py-0.5 rounded">notaria.conservador.traiguen@gmail.com</strong> mencionando el código <strong className="text-on-surface font-mono">#{codigo}</strong> en el asunto.</p>
                 </div>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default async function TransferenciaInstruccionesPage(props: { searchPara
               
               <div className="col-span-2 border-t border-dashed border-outline-variant/30 pt-4">
                 <label className="text-[9px] font-bold text-secondary uppercase tracking-widest mb-1 block font-label">Correo de Confirmación</label>
-                <span className="text-base font-medium font-body text-primary">pagos@notariatraiguen.cl</span>
+                <span className="text-base font-medium font-body text-primary">notaria.conservador.traiguen@gmail.com</span>
               </div>
             </div>
 

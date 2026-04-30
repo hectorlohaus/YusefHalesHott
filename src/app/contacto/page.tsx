@@ -57,7 +57,7 @@ export default async function ContactoPage() {
                 <div>
                   <h3 className="text-sm font-label font-bold uppercase tracking-widest text-secondary mb-2">Correo Electrónico</h3>
                   <p className="text-xl md:text-2xl font-headline font-medium text-on-background break-all">
-                    <a href="mailto:contacto@notariatraiguen.cl" className="hover:text-secondary transition-colors">contacto@notariatraiguen.cl</a>
+                    <a href="mailto:notaria.conservador.traiguen@gmail.com" className="hover:text-secondary transition-colors">notaria.conservador.traiguen@gmail.com</a>
                   </p>
                   <p className="text-on-surface-variant">Consultas generales y trámites digitales</p>
                 </div>

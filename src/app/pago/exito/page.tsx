@@ -137,7 +137,7 @@ export default async function PagoExitoPage(props: { searchParams: Promise<{ sol
             </h2>
             
             <p className="font-body text-sm text-on-surface-variant mb-8 leading-relaxed">
-               Para avanzar con la solicitud <strong className="text-on-surface">{solicitud.servicio?.titulo}</strong>, envíe los siguientes documentos a <a href="mailto:tramites@notariatraiguen.cl" className="text-secondary font-semibold hover:underline">tramites@notariatraiguen.cl</a> indicando el código <span className="font-mono bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">{codigo}</span> en el asunto del correo.
+               Para avanzar con la solicitud <strong className="text-on-surface">{solicitud.servicio?.titulo}</strong>, envíe los siguientes documentos a <a href="mailto:notaria.conservador.traiguen@gmail.com" className="text-secondary font-semibold hover:underline">notaria.conservador.traiguen@gmail.com</a> indicando el código <span className="font-mono bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">{codigo}</span> en el asunto del correo.
             </p>
 
             {docs.length > 0 ? (
@@ -168,7 +168,7 @@ export default async function PagoExitoPage(props: { searchParams: Promise<{ sol
 
       {/* Secondary Actions */}
       <div className="mt-16 pt-10 border-t border-outline-variant/20 flex flex-wrap gap-6 justify-center items-center">
-        <a href={`mailto:tramites@notariatraiguen.cl?subject=Documentos Trámite ${codigo}`} className="px-8 py-3.5 bg-primary text-on-primary rounded-xl font-medium flex items-center gap-3 hover:opacity-90 transition-all font-body text-sm shadow-md">
+        <a href={`mailto:notaria.conservador.traiguen@gmail.com?subject=Documentos Trámite ${codigo}`} className="px-8 py-3.5 bg-primary text-on-primary rounded-xl font-medium flex items-center gap-3 hover:opacity-90 transition-all font-body text-sm shadow-md">
           <span className="material-symbols-outlined text-[20px]">mail</span>
           Enviar Documentos
         </a>
