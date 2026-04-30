@@ -9,7 +9,7 @@ export default function CopyBankingDataButton({ amount, id }: { amount: number, 
 Cuenta Corriente
 123456789
 76.123.456-7
-Notaría Yusef Hales Hott
+Notaría y Conservador Traiguén
 pagos@notariatraiguen.cl
 $${amount.toLocaleString('es-CL')}
 #${id.substring(0,8).toUpperCase()}`;

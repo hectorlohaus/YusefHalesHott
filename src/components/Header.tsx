@@ -13,7 +13,7 @@ export default function Header() {
         {/* Logo / Brand */}
         <Link href="/" className="flex items-center gap-3">
           <Image src="/logo.png" alt="Logo Notaría" width={40} height={40} className="h-10 w-auto" />
-          <span className="text-xl font-bold font-headline text-slate-50 tracking-wide hidden sm:block">Notaría Yusef Hales Hott</span>
+          <span className="text-xl font-bold font-headline text-slate-50 tracking-wide hidden sm:block">Notaría y Conservador Traiguén</span>
         </Link>
 
         {/* Desktop nav */}

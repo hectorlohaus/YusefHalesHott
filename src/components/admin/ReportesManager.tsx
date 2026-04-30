@@ -184,7 +184,7 @@ export default function ReportesManager({ solicitudes, historial, empleados, ser
 
     doc.setFontSize(12);
     doc.setTextColor(50, 50, 50);
-    doc.text(`Entidad: Notaría Yusef Hales Hott`, 14, 32);
+    doc.text(`Entidad: Notaría y Conservador Traiguén`, 14, 32);
     const periodoStr = periodo === 'personalizado' ? `Custom: ${fechaDesde} al ${fechaHasta}` : periodo.charAt(0).toUpperCase() + periodo.slice(1);
     doc.text(`Período de Análisis: ${periodoStr}`, 14, 38);
     doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString()}`, 14, 44);

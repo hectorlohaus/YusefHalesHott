@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="space-y-6">
           <div className="flex items-center gap-3 mb-2">
             <Image src="/logo.png" alt="Logo Notaría Footer" width={40} height={40} className="h-10 w-auto opacity-80" />
-            <span className="font-headline text-lg text-slate-100 block">Notaría Yusef Hales Hott</span>
+            <span className="font-headline text-lg text-slate-100 block">Notaría y Conservador Traiguén</span>
           </div>
           <p className="font-body text-sm text-slate-400 leading-relaxed max-w-xs">
             Liderando la transformación digital en servicios notariales con integridad, seguridad y eficiencia.
@@ -57,7 +57,7 @@ export default function Footer() {
       </div>
       <div className="max-w-screen-xl mx-auto px-8 mt-20 pt-8 border-t border-slate-900/50 text-center">
         <p className="font-body text-sm text-slate-400 opacity-100 mb-1">
-          &copy; {new Date().getFullYear()} Notaría Yusef Hales Hott. Excelencia Digital y Tradición Legal.
+          &copy; {new Date().getFullYear()} Notaría y Conservador Traiguén. Excelencia Digital y Tradición Legal.
         </p>
         <p className="font-body text-xs text-slate-500 opacity-60">
           Desarrollado por Hector Lohaus

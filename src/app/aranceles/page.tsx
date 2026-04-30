@@ -4,7 +4,7 @@ import ArancelesSearch from '@/components/ArancelesSearch';
 export const revalidate = 3600;
 
 export const metadata = {
-  title: 'Precios y Aranceles | Notaría Yusef Hales Hott',
+  title: 'Precios y Aranceles | Notaría y Conservador Traiguén',
   description: 'Consulte nuestra lista actualizada de servicios notariales con transparencia total en cada trámite.',
 };
 

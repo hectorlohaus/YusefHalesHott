@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getHorarios, updateHorarios } from '@/app/actions/horarios';
 
 export const metadata = {
-  title: 'Gestión de Horarios | Notaría Yusef Hales Hott',
+  title: 'Gestión de Horarios | Notaría y Conservador Traiguén',
 };
 
 export default async function HorariosPage() {

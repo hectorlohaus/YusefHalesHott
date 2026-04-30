@@ -64,7 +64,7 @@ export default async function AdminLoginPage() {
               </svg>
             </div>
             <span className="font-label text-[10px] uppercase tracking-widest text-white/60">
-              Notaría Yusef Hales Hott
+              Notaría y Conservador Traiguén
             </span>
           </div>
         </div>
@@ -86,7 +86,7 @@ export default async function AdminLoginPage() {
             {/* Mobile header */}
             <div className="lg:hidden text-center mb-10">
               <span className="font-label text-[10px] uppercase tracking-widest text-slate-400 block mb-1">
-                Notaría Yusef Hales Hott
+                Notaría y Conservador Traiguén
               </span>
               <h1 className="font-headline text-3xl font-bold text-slate-900">Acceso Administrativo</h1>
             </div>

@@ -59,7 +59,7 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(18);
-    doc.text('Tarifario de Aranceles - Notaría Yusef Hales Hott', 14, 20);
+    doc.text('Tarifario de Aranceles - Notaría y Conservador Traiguén', 14, 20);
     
     doc.setFontSize(10);
     doc.text(`Generado el: ${new Date().toLocaleDateString('es-CL')}`, 14, 30);
@@ -79,7 +79,7 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
       styles: { fontSize: 9 },
     });
 
-    doc.save('aranceles-notaria-yusef.pdf');
+    doc.save('aranceles-notaria-conservador.pdf');
   };
 
   return (

@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: 'Términos y Condiciones | Notaría Yusef Hales Hott',
-  description: 'Términos y condiciones de uso del sitio web y plataforma digital de la Notaría Yusef Hales Hott, Traiguén.',
+  title: 'Términos y Condiciones | Notaría y Conservador Traiguén',
+  description: 'Términos y condiciones de uso del sitio web y plataforma digital de la Notaría y Conservador Traiguén, Traiguén.',
 };
 
 export default function TerminosPage() {

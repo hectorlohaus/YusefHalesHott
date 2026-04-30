@@ -32,7 +32,7 @@ export default async function TransparenciaPage() {
           <div className="relative z-10 max-w-2xl">
             <h1 className="font-headline text-4xl md:text-5xl text-slate-50 font-bold mb-4 tracking-tight">Personal y Remuneraciones</h1>
             <p className="text-slate-300 text-base md:text-lg font-light leading-relaxed">
-              Registro detallado de los profesionales y colaboradores que integran Notaría Yusef Hales Hott, bajo estándares de transparencia activa institucional.
+              Registro detallado de los profesionales y colaboradores que integran Notaría y Conservador Traiguén, bajo estándares de transparencia activa institucional.
             </p>
           </div>
         </section>

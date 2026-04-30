@@ -17,7 +17,7 @@ const notoSerif = Noto_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Notaría Yusef Hales Hott | Trámites Notariales en Línea",
+  title: "Notaría y Conservador Traiguén | Trámites Notariales en Línea",
   description: "Trámites y servicios notariales en línea en Traiguén, Chile. Rápido, seguro y transparente. Declaraciones juradas, poderes, escrituras y más.",
 };
 

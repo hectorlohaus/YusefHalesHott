@@ -1,9 +1,9 @@
 import { getHorarios } from '@/app/actions/horarios';
 
 export const metadata = {
-  title: 'Horarios y Contacto | Notaría Yusef Hales Hott',
+  title: 'Horarios y Contacto | Notaría y Conservador Traiguén',
   description:
-    'Horarios de atención, teléfonos, correos y ubicación de la Notaría Yusef Hales Hott en Traiguén, Chile.',
+    'Horarios de atención, teléfonos, correos y ubicación de la Notaría y Conservador Traiguén en Traiguén, Chile.',
 };
 
 export const revalidate = 3600;
@@ -93,7 +93,7 @@ export default async function ContactoPage() {
 
             <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 bg-white/90 backdrop-blur-md p-6 rounded-lg flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-center sm:text-left">
-                <p className="font-headline font-bold text-slate-900">Notaría Yusef Hales Hott</p>
+                <p className="font-headline font-bold text-slate-900">Notaría y Conservador Traiguén</p>
                 <p className="text-sm text-slate-600">Traiguén, Araucanía</p>
               </div>
               <a

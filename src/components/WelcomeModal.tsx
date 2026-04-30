@@ -50,7 +50,7 @@ export default function WelcomeModal({ horarios }: { horarios?: any }) {
           <div className="relative h-full flex flex-col justify-between p-6 sm:p-8 md:p-10 z-10">
             <div>
               <h1 id="modal-title" className="font-headline text-3xl sm:text-4xl md:text-5xl text-on-primary italic leading-tight tracking-tight">
-                Notaría Yusef<br />Hales Hott
+                Notaría y Conservador<br />Traiguén
               </h1>
               <div className="w-12 h-1 bg-secondary mt-4 md:mt-6"></div>
             </div>

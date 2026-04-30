@@ -3,7 +3,7 @@ import SolicitudForm from '@/components/SolicitudForm';
 import Script from 'next/script';
 
 export const metadata = {
-  title: 'Solicitar Trámite | Notaría Yusef Hales Hott',
+  title: 'Solicitar Trámite | Notaría y Conservador Traiguén',
   description: 'Complete el formulario para solicitar su trámite notarial en línea de forma rápida y segura.',
 };
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: 'Política de Privacidad | Notaría Yusef Hales Hott',
+  title: 'Política de Privacidad | Notaría y Conservador Traiguén',
   description: 'Política de privacidad y protección de datos personales conforme a la Ley 19.628 de Chile y estándares RGPD.',
 };
 

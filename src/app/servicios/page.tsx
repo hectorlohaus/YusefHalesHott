@@ -4,7 +4,7 @@ import ServiceSearch from '@/components/ServiceSearch';
 export const revalidate = 3600;
 
 export const metadata = {
-  title: 'Trámites y Servicios | Notaría Yusef Hales Hott',
+  title: 'Trámites y Servicios | Notaría y Conservador Traiguén',
   description:
     'Catálogo de trámites y servicios notariales con aranceles y requisitos. Solicite en línea de forma rápida y segura.',
 };

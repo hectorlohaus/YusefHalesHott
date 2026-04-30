@@ -59,7 +59,7 @@ export default function SideNav({ perfil }: { perfil: any }) {
           </div>
           {!isCollapsed && (
             <div className="overflow-hidden">
-              <h1 className="text-xl font-bold text-white tracking-tight leading-tight truncate">Notaría Yusef</h1>
+              <h1 className="text-xl font-bold text-white tracking-tight leading-tight truncate">Notaría y Conservador</h1>
               <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider truncate">Panel Admin</p>
             </div>
           )}
