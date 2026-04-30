@@ -502,7 +502,7 @@ export default function SolicitudForm({
     </section>
 
       {/* ── CTA ── */}
-      <div className="pt-6 mt-4 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-surface-container">
+      <div className="pt-6 mt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-surface-container">
         <div className="flex items-center gap-3 text-on-surface-variant italic text-sm">
           <span className="material-symbols-outlined text-secondary">shield_lock</span>
           <div className="flex flex-col">
@@ -510,12 +510,12 @@ export default function SolicitudForm({
             <span className="opacity-80">Información cifrada y segura</span>
           </div>
         </div>
-        <div className="flex gap-4 w-full md:w-auto">
-          <button type="button" className="flex-1 md:flex-none px-8 py-4 text-on-surface-variant font-medium hover:text-on-surface transition-colors" onClick={() => window.history.back()}>Cancelar</button>
+        <div className="flex flex-col-reverse sm:flex-row gap-4 w-full md:w-auto">
+          <button type="button" className="w-full sm:w-auto px-6 sm:px-8 py-4 text-on-surface-variant font-medium hover:text-on-surface transition-colors text-center" onClick={() => window.history.back()}>Cancelar</button>
           <button
             type="submit"
             disabled={loading}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-3 font-label text-[11px] uppercase tracking-widest font-bold px-12 py-5 rounded-xl text-on-primary transition-all active:scale-[0.98] focus:outline-none ${
+            className={`w-full sm:w-auto flex items-center justify-center gap-3 font-label text-[11px] uppercase tracking-widest font-bold px-6 sm:px-12 py-4 sm:py-5 rounded-xl text-on-primary transition-all active:scale-[0.98] focus:outline-none ${
               loading ? 'bg-outline cursor-not-allowed' : 'bg-primary shadow-lg shadow-primary/10 hover:shadow-primary/20 hover:bg-primary/90'
             }`}
           >
