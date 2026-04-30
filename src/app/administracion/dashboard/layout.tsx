@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <SideNav perfil={perfil} />
 
       {/* Main Content Area */}
-      <main className="pl-64 flex-1 flex flex-col w-full min-h-screen">
+      <main id="dashboard-main" className="pl-64 flex-1 flex flex-col w-full min-h-screen transition-all duration-300">
         {/* We keep the inner pad inside page.tsx so managers can handle full width lines if needed */}
         {children}
       </main>

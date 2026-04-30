@@ -373,7 +373,7 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
       {editingId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={cancelEdit}></div>
-          <div className="bg-white w-full max-w-2xl relative shadow-2xl rounded-3xl overflow-hidden flex flex-col md:max-h-[90vh] animate-in zoom-in-95 duration-200">
+          <div className="bg-white w-full max-w-5xl relative shadow-2xl rounded-3xl overflow-hidden flex flex-col md:max-h-[90vh] animate-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
             <div className="bg-[#005ab4] px-8 py-6 text-white flex justify-between items-center rounded-t-3xl">
@@ -394,11 +394,12 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
             <form onSubmit={handleSubmit} className="p-8 overflow-y-auto custom-scrollbar">
               {activeServiceEditing && <input type="hidden" name="id" value={activeServiceEditing.id} />}
               
-              <div className="flex flex-col gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
-                <div className="flex flex-col sm:flex-row gap-6">
+                {/* Columna Izquierda: Datos Principales */}
+                <div className="flex flex-col gap-6">
                   {/* Título */}
-                  <div className="flex-grow space-y-2">
+                  <div className="space-y-2">
                     <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Nombre del Trámite</label>
                     <input 
                       required 
@@ -409,141 +410,145 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
                     />
                   </div>
 
-                  {/* Arancel */}
-                  <div className="w-full sm:w-1/4 space-y-2 shrink-0">
-                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Arancel Base</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400 font-bold">$</span>
+                  <div className="flex flex-col sm:flex-row gap-6">
+                    {/* Arancel */}
+                    <div className="w-full sm:w-1/2 space-y-2 shrink-0">
+                      <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Arancel Base</label>
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400 font-bold">$</span>
+                        <input 
+                          required 
+                          type="number" 
+                          name="arancel" 
+                          defaultValue={activeServiceEditing?.arancel} 
+                          className="w-full pl-8 font-headline font-bold text-xl text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all tabular-nums" 
+                        />
+                      </div>
+                    </div>
+
+                    {/* Arancel Texto */}
+                    <div className="w-full sm:w-1/2 space-y-2 shrink-0">
+                      <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Texto Variable (Opcional)</label>
                       <input 
-                        required 
-                        type="number" 
-                        name="arancel" 
-                        defaultValue={activeServiceEditing?.arancel} 
-                        className="w-full pl-8 font-headline font-bold text-xl text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all tabular-nums" 
+                        type="text" 
+                        name="arancel_texto" 
+                        defaultValue={activeServiceEditing?.arancel_texto || ''} 
+                        placeholder="Ej: $15.000 + FEA"
+                        className="w-full font-headline font-bold text-sm text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all" 
                       />
                     </div>
                   </div>
 
-                  {/* Arancel Texto */}
-                  <div className="w-full sm:w-1/3 space-y-2 shrink-0">
-                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Texto Variable (Opcional)</label>
-                    <input 
-                      type="text" 
-                      name="arancel_texto" 
-                      defaultValue={activeServiceEditing?.arancel_texto || ''} 
-                      placeholder="Ej: $15.000 + FEA"
-                      className="w-full font-headline font-bold text-sm text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all" 
+                  {/* Descripción */}
+                  <div className="space-y-2 flex-grow flex flex-col">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Descripción Legal / Contexto</label>
+                    <textarea 
+                      name="descripcion" 
+                      defaultValue={activeServiceEditing?.descripcion || ''} 
+                      className="w-full flex-grow font-body text-sm text-slate-700 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all min-h-[120px] resize-none" 
+                      placeholder="Breve explicación del objetivo y marco del trámite..."
                     />
                   </div>
                 </div>
 
-                {/* Descripción */}
-                <div className="space-y-2">
-                  <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Descripción Legal / Contexto</label>
-                  <textarea 
-                    name="descripcion" 
-                    defaultValue={activeServiceEditing?.descripcion || ''} 
-                    className="w-full font-body text-sm text-slate-700 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all min-h-[100px] resize-none" 
-                    placeholder="Breve explicación del objetivo y marco del trámite..."
-                  />
-                </div>
+                {/* Columna Derecha: Configuración */}
+                <div className="flex flex-col gap-6">
 
-                {/* Requisitos Dinámicos */}
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between">
-                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Lista de Requisitos</label>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {requisitos.map((req, i) => (
-                      <div key={i} className="flex flex-col sm:flex-row items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-300 relative group">
-                        <span className="hidden sm:block font-bold text-slate-300 w-3 text-right text-xs shrink-0">{i + 1}.</span>
-                        <input 
-                          value={req}
-                          onChange={(e) => handleRequisitoChange(i, e.target.value)}
-                          className="w-full font-body text-sm text-slate-700 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all shadow-sm" 
-                          placeholder="Ej: Fotocopia Cédula de Identidad..."
-                        />
-                        {/* Action buttons embedded on mobile, next to it on desktop */}
-                        <div className="flex shrink-0 gap-1 sm:w-8 justify-center mt-2 sm:mt-0 items-center">
-                          {requisitos.length > 1 && (
-                            <button 
-                              type="button" 
-                              onClick={() => removeRequisito(i)}
-                              className="text-slate-300 hover:text-red-500 rounded-full transition-colors flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100"
-                              title="Quitar"
-                            >
-                              <span className="material-symbols-outlined text-[20px]">remove_circle_outline</span>
-                            </button>
-                          )}
-                          {i === requisitos.length - 1 && (
-                            <button 
-                              type="button" 
-                              onClick={addRequisito}
-                              className="bg-slate-50 border border-slate-200 text-[#005ab4] hover:bg-[#005ab4]/10 rounded-xl px-3 py-1.5 transition-colors absolute sm:static right-0 bottom-full mb-2 sm:mb-0 hidden"
-                              title="Añadir requisito"
-                            >
-                              <span className="text-xs font-bold uppercase">Añadir</span>
-                            </button>
-                          )}
+                  {/* Requisitos Dinámicos */}
+                  <div className="space-y-3 p-5 bg-slate-50 rounded-2xl border border-slate-200 flex-grow">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Lista de Requisitos</label>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {requisitos.map((req, i) => (
+                        <div key={i} className="flex flex-col sm:flex-row items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-300 relative group">
+                          <span className="hidden sm:block font-bold text-slate-400 w-4 text-right text-xs shrink-0">{i + 1}.</span>
+                          <input 
+                            value={req}
+                            onChange={(e) => handleRequisitoChange(i, e.target.value)}
+                            className="w-full font-body text-sm text-slate-700 border border-slate-200 bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all shadow-sm" 
+                            placeholder="Ej: Fotocopia Cédula de Identidad..."
+                          />
+                          <div className="flex shrink-0 gap-1 sm:w-8 justify-center mt-2 sm:mt-0 items-center">
+                            {requisitos.length > 1 && (
+                              <button 
+                                type="button" 
+                                onClick={() => removeRequisito(i)}
+                                className="text-slate-400 hover:text-red-500 rounded-full transition-colors flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100"
+                                title="Quitar"
+                              >
+                                <span className="material-symbols-outlined text-[20px]">remove_circle_outline</span>
+                              </button>
+                            )}
+                            {i === requisitos.length - 1 && (
+                              <button 
+                                type="button" 
+                                onClick={addRequisito}
+                                className="bg-white border border-slate-200 text-[#005ab4] hover:bg-[#005ab4]/10 rounded-xl px-3 py-1.5 transition-colors absolute sm:static right-0 bottom-full mb-2 sm:mb-0 hidden"
+                                title="Añadir requisito"
+                              >
+                                <span className="text-xs font-bold uppercase">Añadir</span>
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    
+                    <button 
+                      type="button" 
+                      onClick={addRequisito}
+                      className="mt-4 text-[11px] font-label font-bold text-[#005ab4] uppercase tracking-widest flex items-center gap-1 hover:text-[#00458a] transition-colors sm:ml-7"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">add_circle</span> 
+                      Agregar Requisito
+                    </button>
                   </div>
-                  
-                  <button 
-                    type="button" 
-                    onClick={addRequisito}
-                    className="mt-2 text-[11px] font-label font-bold text-[#005ab4] uppercase tracking-widest flex items-center gap-1 hover:text-[#00458a] transition-colors sm:ml-6"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">add_circle</span> 
-                    Agregar Requisito
-                  </button>
-                </div>
 
-                {/* Estado Público y Disponibilidad */}
-                <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row gap-4">
-                  <label className="flex flex-1 items-center gap-4 cursor-pointer group p-4 rounded-xl border border-slate-200 hover:border-[#005ab4] transition-colors bg-slate-50">
-                    <div className="relative flex items-center shrink-0">
-                      <input 
-                        type="checkbox" 
-                        name="activo" 
-                        defaultChecked={activeServiceEditing ? activeServiceEditing.activo : true} 
-                        className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-slate-300 rounded-lg checked:border-[#005ab4] checked:bg-[#005ab4] transition-all" 
-                      />
-                      <span className="absolute text-white material-symbols-outlined text-[18px] left-[12px] top-[12px] -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">check</span>
-                    </div>
-                    <div>
-                      <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
-                        Visible en Catálogo
-                      </span>
-                      <span className="block font-body text-[10px] text-slate-500 mt-0.5 max-w-[200px]">
-                        Permite que se muestre en la web.
-                      </span>
-                    </div>
-                  </label>
+                  {/* Estado Público y Disponibilidad */}
+                  <div className="flex flex-col gap-4">
+                    <label className="flex flex-1 items-center gap-4 cursor-pointer group p-4 rounded-xl border border-slate-200 hover:border-[#005ab4] transition-colors bg-white shadow-sm">
+                      <div className="relative flex items-center shrink-0">
+                        <input 
+                          type="checkbox" 
+                          name="activo" 
+                          defaultChecked={activeServiceEditing ? activeServiceEditing.activo : true} 
+                          className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-slate-300 rounded-lg checked:border-[#005ab4] checked:bg-[#005ab4] transition-all" 
+                        />
+                        <span className="absolute text-white material-symbols-outlined text-[18px] left-[12px] top-[12px] -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">check</span>
+                      </div>
+                      <div>
+                        <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
+                          Visible en Catálogo
+                        </span>
+                        <span className="block font-body text-[10px] text-slate-500 mt-0.5">
+                          Permite que se muestre públicamente en la web.
+                        </span>
+                      </div>
+                    </label>
 
-                  <label className="flex flex-1 items-center gap-4 cursor-pointer group p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition-colors bg-slate-50">
-                    <div className="relative flex items-center shrink-0">
-                      <input 
-                        type="checkbox" 
-                        name="permite_pago_online" 
-                        defaultChecked={activeServiceEditing ? activeServiceEditing.permite_pago_online : true} 
-                        className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-slate-300 rounded-lg checked:border-emerald-500 checked:bg-emerald-500 transition-all" 
-                      />
-                      <span className="absolute text-white material-symbols-outlined text-[18px] left-[12px] top-[12px] -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">check</span>
-                    </div>
-                    <div>
-                      <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
-                        Pago Online Habilitado
-                      </span>
-                      <span className="block font-body text-[10px] text-slate-500 mt-0.5 max-w-[200px]">
-                        Permite a los usuarios iniciar e pagar el trámite vía web.
-                      </span>
-                    </div>
-                  </label>
+                    <label className="flex flex-1 items-center gap-4 cursor-pointer group p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition-colors bg-white shadow-sm">
+                      <div className="relative flex items-center shrink-0">
+                        <input 
+                          type="checkbox" 
+                          name="permite_pago_online" 
+                          defaultChecked={activeServiceEditing ? activeServiceEditing.permite_pago_online : true} 
+                          className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-slate-300 rounded-lg checked:border-emerald-500 checked:bg-emerald-500 transition-all" 
+                        />
+                        <span className="absolute text-white material-symbols-outlined text-[18px] left-[12px] top-[12px] -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">check</span>
+                      </div>
+                      <div>
+                        <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
+                          Pago Online Habilitado
+                        </span>
+                        <span className="block font-body text-[10px] text-slate-500 mt-0.5">
+                          Permite a los usuarios pagar el trámite vía web.
+                        </span>
+                      </div>
+                    </label>
+                  </div>
                 </div>
-              </div>
 
               {/* Modal Footer Actions */}
               <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-3 sticky bottom-0 bg-white shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.05)]">
