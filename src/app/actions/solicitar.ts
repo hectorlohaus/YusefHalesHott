@@ -7,11 +7,11 @@ import { validateRut } from '@/lib/rut';
 export async function submitSolicitud(formData: FormData) {
   try {
     const supabase = await createClient();
-    
+
     // Ensure bucket exists or create it (requires privileges, but harmless if already exists)
     // Supabase JS will fail gracefully if we don't have permissions, we assume bucket 'documentos' exists 
-    // or is created by the admin or through this call if anon has RLS bypass
-    
+    // or is created by the admin or through this call if anon has RLS bypass sadfasf
+
     const nombre = formData.get('nombre') as string;
     const rut = formData.get('rut') as string;
     const email = formData.get('email') as string;
@@ -40,9 +40,9 @@ export async function submitSolicitud(formData: FormData) {
     }
 
     if (count !== null && count >= 3) {
-      return { 
-        success: false, 
-        error: 'Por razones de seguridad, no puedes tener más de 3 solicitudes con pago pendiente. Por favor completa los pagos anteriores o comunícate con la notaría.' 
+      return {
+        success: false,
+        error: 'Por razones de seguridad, no puedes tener más de 3 solicitudes con pago pendiente. Por favor completa los pagos anteriores o comunícate con la notaría.'
       };
     }
 
@@ -68,8 +68,8 @@ export async function submitSolicitud(formData: FormData) {
       return { success: false, error: 'Error al guardar la solicitud en la base de datos.' };
     }
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       message: 'Solicitud creada con éxito.',
       solicitudId: solData.id
     };

@@ -25,7 +25,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ tab
   const rol = perfil?.rol || 'empleado';
   const profileId = perfil?.id || null;
 
-  // Optimización: Solo obtener los datos necesarios según la pestaña activa
+  // Optimización: Solo obtener los datos necesarios según la pestaña activa asdfsdf 
   // Esto previene errores de "ConnectTimeoutError" por saturación de conexiones a Supabase cambios
   const [
     { data: servicios },

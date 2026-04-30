@@ -12,7 +12,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect('/administracion');
   }
 
-  // Fetch the internal user profile to get roles and info
+  // Fetch the internal user profile to get roles and info dsfasdfsf 
   const { data: perfil, error: perfilError } = await supabase
     .from('usuarios')
     .select('id, nombre, rol, email, auth_id')
@@ -23,7 +23,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="flex bg-[#f9f9ff] min-h-screen text-slate-800 antialiased font-inter">
       <SideNav perfil={perfil} />
-      
+
       {/* Main Content Area */}
       <main className="pl-64 flex-1 flex flex-col w-full min-h-screen">
         {/* We keep the inner pad inside page.tsx so managers can handle full width lines if needed */}
