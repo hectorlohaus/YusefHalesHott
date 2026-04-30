@@ -6,7 +6,7 @@ export default async function TransparenciaPage() {
   const supabase = await createClient();
   const { data: empleados, error } = await supabase
     .from('usuarios')
-    .select('nombre, rol, sueldo')
+    .select('nombre, rut, rol, sueldo')
     .eq('activo', true)
     .order('rol', { ascending: false })
     .order('nombre', { ascending: true });
@@ -74,6 +74,7 @@ export default async function TransparenciaPage() {
               <thead>
                 <tr className="bg-surface-container-low">
                   <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Nombre Completo</th>
+                  <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">RUT</th>
                   <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Cargo / Función</th>
                   <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant text-right">Remuneración Bruta</th>
                 </tr>
@@ -95,6 +96,7 @@ export default async function TransparenciaPage() {
                   return (
                     <tr key={index} className="hover:bg-surface-container-low/40 transition-colors">
                       <td className="px-8 py-6 font-medium text-on-surface">{empleado.nombre}</td>
+                      <td className="px-8 py-6 text-on-surface-variant font-mono text-sm">{empleado.rut || 'No Registrado'}</td>
                       <td className="px-8 py-6 text-on-surface-variant">{funcion}</td>
                       <td className="px-8 py-6 text-right font-headline font-bold text-secondary text-lg">
                         ${empleado.sueldo?.toLocaleString('es-CL') || 0}
@@ -137,19 +139,8 @@ export default async function TransparenciaPage() {
             <p className="text-on-surface-variant text-sm leading-relaxed">
               Las remuneraciones presentadas corresponden a los haberes brutos mensuales. Estos incluyen sueldo base, asignaciones de antigüedad y bonificaciones legales vigentes al periodo informado. La información es actualizada trimestralmente para garantizar la fidelidad de los datos presentados en este portal de Transparencia Activa.
             </p>
-            <div className="flex flex-wrap items-center gap-4 mt-6">
-              <div className="flex items-center gap-2 text-xs font-semibold text-secondary cursor-pointer hover:underline">
-                <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
-                Reglamento de Remuneraciones
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-secondary cursor-pointer hover:underline">
-                <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
-                Escalafón Institucional
-              </div>
-            </div>
           </div>
         </div>
-
       </div>
     </main>
   );

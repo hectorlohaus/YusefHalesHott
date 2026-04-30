@@ -19,6 +19,10 @@ export default function EmpleadosManager({ initialEmpleados, userRole }: { initi
     setCurrentPage(1);
   }, [searchTerm]);
 
+  const activeEmpleadoEditing = useMemo(() => {
+    return editingId === 'new' ? null : empleados.find(e => e.id === editingId);
+  }, [editingId, empleados]);
+
   const stats = useMemo(() => {
     let notarios = 0;
     let supervisores = 0;
@@ -89,7 +93,8 @@ export default function EmpleadosManager({ initialEmpleados, userRole }: { initi
   };
 
   return (
-    <section className="p-8 mb-12">
+    <>
+      <section className="p-8 mb-12">
       {/* Header Section (Estilo SolicitudesManager) */}
       <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end mb-8 gap-4">
         <div>
@@ -192,6 +197,7 @@ export default function EmpleadosManager({ initialEmpleados, userRole }: { initi
             <thead>
               <tr className="bg-slate-50 text-slate-500 border-b border-slate-200">
                 <th className="px-6 py-4 font-label text-[10px] uppercase tracking-widest font-bold">Nombre Completo</th>
+                <th className="px-6 py-4 font-label text-[10px] uppercase tracking-widest font-bold">RUT</th>
                 <th className="px-6 py-4 font-label text-[10px] uppercase tracking-widest font-bold">Dirección de Correo</th>
                 <th className="px-6 py-4 font-label text-[10px] uppercase tracking-widest font-bold">Rol</th>
                 <th className="px-6 py-4 font-label text-[10px] uppercase tracking-widest font-bold text-right">Sueldo Asignado</th>
@@ -200,115 +206,45 @@ export default function EmpleadosManager({ initialEmpleados, userRole }: { initi
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {editingId === 'new' && (
-                <tr className="bg-[#005ab4]/5">
-                  <td colSpan={6} className="p-6">
-                    <form onSubmit={handleCreate} className="flex gap-4 flex-col lg:flex-row lg:items-end">
-                      <div className="flex-1 min-w-[200px] space-y-2">
-                        <label className="font-label text-xs font-bold uppercase tracking-widest text-[#005ab4]">Nombre Completo</label>
-                        <input required name="nombre" className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all" />
-                      </div>
-                      <div className="flex-1 min-w-[200px] space-y-2">
-                        <label className="font-label text-xs font-bold uppercase tracking-widest text-[#005ab4]">Email Institucional</label>
-                        <input required type="email" name="email" className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all" />
-                      </div>
-                      <div className="w-full lg:w-48 space-y-2">
-                        <label className="font-label text-xs font-bold uppercase tracking-widest text-[#005ab4]">Crear Contraseña</label>
-                        <input required type="password" name="password" className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all" />
-                      </div>
-                      <div className="w-full lg:w-48 space-y-2">
-                        <label className="font-label text-xs font-bold uppercase tracking-widest text-[#005ab4]">Rol del Sistema</label>
-                        <select name="rol" className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all bg-white cursor-pointer hover:bg-slate-50">
-                          <option value="empleado">Personal Regular</option>
-                          <option value="supervisor">Supervisor</option>
-                          <option value="notario">Notario Titular</option>
-                        </select>
-                      </div>
-                      <div className="w-full lg:w-48 space-y-2">
-                        <label className="font-label text-xs font-bold uppercase tracking-widest text-[#005ab4]">Sueldo Bruto ($)</label>
-                        <input required type="number" name="sueldo" defaultValue={0} className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all tabular-nums" />
-                      </div>
-                      <div className="w-full lg:w-20 space-y-2">
-                        <label className="font-label text-xs font-bold uppercase tracking-widest text-[#005ab4]">Activo</label>
-                        <div className="pt-2">
-                          <input type="checkbox" name="activo" defaultChecked className="w-5 h-5 rounded border-slate-300 text-[#005ab4] focus:ring-[#005ab4]" />
-                        </div>
-                      </div>
-                      <div className="flex gap-2 lg:mb-1 w-full lg:w-auto h-min mt-4 lg:mt-0 justify-end">
-                        <button type="submit" disabled={loading} className="px-6 py-2.5 bg-[#005ab4] text-white text-sm font-label font-bold uppercase tracking-widest hover:bg-[#3381cc] transition-all shadow-md rounded-xl disabled:opacity-50">Registrar</button>
-                        <button type="button" onClick={cancelEdit} className="px-6 py-2.5 text-sm font-label font-bold text-slate-600 border border-slate-200 bg-white hover:bg-slate-50 transition-colors rounded-xl shadow-sm">Cancelar</button>
-                      </div>
-                    </form>
-                  </td>
-                </tr>
-              )}
 
               {currentItems.map((e) => (
                 <tr key={e.id} className="hover:bg-[#005ab4]/5 transition-colors group">
-                  {editingId === e.id ? (
-                    <td colSpan={6} className="p-6 bg-[#005ab4]/5">
-                      <form onSubmit={handleSubmit} className="flex gap-4 flex-col lg:flex-row lg:items-center">
-                        <input type="hidden" name="id" value={e.id} />
-                        <div className="flex-1 min-w-[200px]">
-                          <input required name="nombre" defaultValue={e.nombre} className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all" placeholder="Nombre completo" />
-                        </div>
-                        <div className="flex-1 min-w-[200px]">
-                          <span className="font-body text-sm font-medium text-slate-500 bg-black/5 px-3 py-1.5 rounded-lg border border-black/5 block">{e.email}</span>
-                        </div>
-                        <div className="w-full lg:w-48">
-                          <span className="font-label text-[11px] font-bold uppercase tracking-widest text-slate-500 bg-black/5 px-3 py-1.5 rounded-lg border border-black/5 inline-block">{e.rol === 'notario' ? 'Notario Titular' : e.rol === 'supervisor' ? 'Supervisor' : 'Personal Regular'}</span>
-                        </div>
-                        <div className="w-full lg:w-48 relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">$</span>
-                          <input required type="number" name="sueldo" defaultValue={e.sueldo} className="w-full pl-7 font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-2.5 transition-all tabular-nums" />
-                        </div>
-                        <div className="w-full lg:w-20 text-center">
-                          <label className="font-label text-[10px] font-bold uppercase tracking-widest text-[#005ab4] block mb-1">Activo</label>
-                          <input type="checkbox" name="activo" defaultChecked={e.activo} className="w-5 h-5 rounded border-slate-300 text-[#005ab4] focus:ring-[#005ab4]" />
-                        </div>
-                        <div className="flex gap-2 lg:justify-end mt-4 lg:mt-0">
-                          <button type="submit" disabled={loading} className="px-4 py-2 bg-[#005ab4] text-white text-xs font-label font-bold uppercase tracking-widest hover:bg-[#3381cc] transition-all shadow-md rounded-lg disabled:opacity-50">Guardar</button>
-                          <button type="button" onClick={cancelEdit} className="px-4 py-2 text-xs font-label font-bold text-slate-600 border border-slate-200 bg-white hover:bg-slate-50 transition-colors rounded-lg shadow-sm">Cancelar</button>
-                        </div>
-                      </form>
+                  <td className="px-6 py-4">
+                    <div className="font-headline font-bold text-lg text-slate-900 group-hover:text-[#005ab4] transition-colors">{e.nombre}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="font-body text-sm font-medium text-slate-600">{e.rut || '-'}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="font-body text-sm font-medium text-slate-600">{e.email}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tighter ${e.rol === 'notario' ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' : e.rol === 'supervisor' ? 'text-orange-700 bg-orange-50 border border-orange-100' : 'text-[#005ab4] bg-[#005ab4]/5 border border-[#005ab4]/10'}`}>
+                      {e.rol === 'notario' ? 'Notario Titular' : e.rol === 'supervisor' ? 'Supervisor' : 'Regular'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right font-label text-base font-bold tabular-nums text-slate-900">
+                    ${e.sueldo?.toLocaleString('es-CL') || 0}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    {e.activo ? (
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-tighter text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 shadow-sm">
+                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Activo
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-tighter text-red-700 bg-red-50 px-2 py-1 rounded-full border border-red-100 shadow-sm">
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Inactivo
+                      </span>
+                    )}
+                  </td>
+                  {canEdit && (
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex justify-center">
+                        <button onClick={() => handleEdit(e.id)} className="bg-slate-100 text-[#005ab4] font-label text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-[#005ab4] hover:text-white transition-colors shadow-sm" title="Actualizar Datos">
+                          Editar
+                        </button>
+                      </div>
                     </td>
-                  ) : (
-                    <>
-                      <td className="px-6 py-4">
-                        <div className="font-headline font-bold text-lg text-slate-900 group-hover:text-[#005ab4] transition-colors">{e.nombre}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="font-body text-sm font-medium text-slate-600">{e.email}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-tighter ${e.rol === 'notario' ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' : e.rol === 'supervisor' ? 'text-orange-700 bg-orange-50 border border-orange-100' : 'text-[#005ab4] bg-[#005ab4]/5 border border-[#005ab4]/10'}`}>
-                          {e.rol === 'notario' ? 'Notario Titular' : e.rol === 'supervisor' ? 'Supervisor' : 'Regular'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right font-label text-base font-bold tabular-nums text-slate-900">
-                        ${e.sueldo?.toLocaleString('es-CL') || 0}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        {e.activo ? (
-                          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-tighter text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 shadow-sm">
-                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Activo
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-tighter text-red-700 bg-red-50 px-2 py-1 rounded-full border border-red-100 shadow-sm">
-                            <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Inactivo
-                          </span>
-                        )}
-                      </td>
-                      {canEdit && (
-                        <td className="px-6 py-4 text-center">
-                          <div className="flex justify-center">
-                            <button onClick={() => handleEdit(e.id)} className="bg-slate-100 text-[#005ab4] font-label text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-[#005ab4] hover:text-white transition-colors shadow-sm" title="Actualizar Datos">
-                              Editar
-                            </button>
-                          </div>
-                        </td>
-                      )}
-                    </>
                   )}
                 </tr>
               ))}
@@ -339,5 +275,180 @@ export default function EmpleadosManager({ initialEmpleados, userRole }: { initi
         </div>
       </div>
     </section>
+      {/* Modal - Tarjeta Flotante Extendida */}
+      {editingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={cancelEdit}></div>
+          <div className="bg-white w-full max-w-xl relative shadow-2xl rounded-3xl overflow-hidden flex flex-col md:max-h-[90vh] animate-in zoom-in-95 duration-200">
+            
+            {/* Modal Header */}
+            <div className="bg-[#005ab4] px-8 py-6 text-white flex justify-between items-center rounded-t-3xl">
+              <div>
+                <p className="font-label text-[10px] uppercase tracking-widest opacity-80 mb-1">
+                  {editingId === 'new' ? 'Registro de Personal' : 'Edición de Perfil'}
+                </p>
+                <h2 className="font-headline text-3xl font-bold">
+                  {editingId === 'new' ? 'Nuevo Empleado' : 'Modificar Empleado'}
+                </h2>
+              </div>
+              <button onClick={cancelEdit} type="button" className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors flex items-center">
+                <span className="material-symbols-outlined text-white">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={editingId === 'new' ? handleCreate : handleSubmit} className="p-8 overflow-y-auto custom-scrollbar">
+              {activeEmpleadoEditing && <input type="hidden" name="id" value={activeEmpleadoEditing.id} />}
+              
+              <div className="flex flex-col gap-6">
+                
+                <div className="flex flex-col sm:flex-row gap-6">
+                  {/* Nombre */}
+                  <div className="w-full sm:w-1/2 space-y-2">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Nombre Completo</label>
+                    <input 
+                      required 
+                      name="nombre" 
+                      defaultValue={activeEmpleadoEditing?.nombre} 
+                      placeholder="Ej: Juan Pérez"
+                      className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all" 
+                    />
+                  </div>
+
+                  {/* RUT */}
+                  <div className="w-full sm:w-1/2 space-y-2">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">RUT</label>
+                    <input 
+                      required 
+                      name="rut" 
+                      defaultValue={activeEmpleadoEditing?.rut} 
+                      placeholder="Ej: 12.345.678-9"
+                      className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all uppercase" 
+                    />
+                  </div>
+                </div>
+
+                {/* Email (Solo creación) */}
+                {editingId === 'new' ? (
+                  <div className="space-y-2">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Email Institucional</label>
+                    <input 
+                      required 
+                      type="email" 
+                      name="email" 
+                      placeholder="Ej: juan.perez@notaria.cl"
+                      className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all" 
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Email Institucional</label>
+                    <div className="w-full font-body text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+                      {activeEmpleadoEditing?.email}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-6">
+                  {/* Rol (Solo creación o visualización) */}
+                  <div className="w-full sm:w-1/2 space-y-2">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Rol del Sistema</label>
+                    {editingId === 'new' ? (
+                      <select name="rol" className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all bg-white cursor-pointer hover:bg-slate-50">
+                        <option value="empleado">Personal Regular</option>
+                        <option value="supervisor">Supervisor</option>
+                        <option value="notario">Notario Titular</option>
+                      </select>
+                    ) : (
+                      <div className="w-full font-body text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 capitalize">
+                        {activeEmpleadoEditing?.rol === 'notario' ? 'Notario Titular' : activeEmpleadoEditing?.rol === 'supervisor' ? 'Supervisor' : 'Personal Regular'}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Password (Solo creación) */}
+                  {editingId === 'new' && (
+                    <div className="w-full sm:w-1/2 space-y-2">
+                      <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Contraseña Inicial</label>
+                      <input 
+                        required 
+                        type="password" 
+                        name="password" 
+                        placeholder="Mínimo 6 caracteres"
+                        className="w-full font-body text-sm text-slate-900 border border-slate-200 focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all" 
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Sueldo */}
+                  <div className="w-full sm:w-1/2 space-y-2">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Sueldo Base Mensual</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">$</span>
+                      <input 
+                        required 
+                        type="number" 
+                        name="sueldo" 
+                        defaultValue={activeEmpleadoEditing?.sueldo || 0} 
+                        className="w-full pl-8 font-headline font-bold text-lg text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all tabular-nums" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Estado Público */}
+                <div className="pt-6 border-t border-slate-100">
+                  <label className="flex items-center gap-4 cursor-pointer group w-full p-4 rounded-xl border border-slate-200 hover:border-[#005ab4] transition-colors bg-slate-50">
+                    <div className="relative flex items-center shrink-0">
+                      <input 
+                        type="checkbox" 
+                        name="activo" 
+                        defaultChecked={activeEmpleadoEditing ? activeEmpleadoEditing.activo : true} 
+                        className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-slate-300 rounded-lg checked:border-[#005ab4] checked:bg-[#005ab4] transition-all" 
+                      />
+                      <span className="absolute text-white material-symbols-outlined text-[18px] left-[12px] top-[12px] -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">check</span>
+                    </div>
+                    <div>
+                      <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
+                        Acceso al Sistema (Activo)
+                      </span>
+                      <span className="block font-body text-xs text-slate-500 mt-0.5 max-w-sm">
+                        Permite al usuario iniciar sesión y gestionar operaciones.
+                      </span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-3 sticky bottom-0 bg-white shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.05)]">
+                <button 
+                  type="button" 
+                  disabled={loading}
+                  onClick={cancelEdit} 
+                  className="px-6 py-3 text-sm font-label font-bold text-slate-600 border border-slate-200 bg-white hover:bg-slate-50 transition-colors rounded-xl shadow-sm"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="px-8 py-3 bg-[#005ab4] text-white text-sm font-label font-bold uppercase tracking-widest hover:bg-[#bd5700] transition-all shadow-lg shadow-[#005ab4]/20 rounded-xl disabled:opacity-50 flex items-center gap-2"
+                >
+                  {loading ? (
+                    'Guardando...'
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-sm">save</span>
+                      Guardar
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

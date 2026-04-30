@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import WelcomeModal from '@/components/WelcomeModal';
 import { createClient } from '@/lib/supabase/server';
+import { getHorarios } from '@/app/actions/horarios';
 
 export const revalidate = 3600; // Revalidar cada hora
 
@@ -13,6 +14,8 @@ export default async function Home() {
     .eq('activo', true)
     .limit(3);
 
+  const horarios = await getHorarios();
+
   const cardImages = [
     "https://lh3.googleusercontent.com/aida-public/AB6AXuD7xsDOmfU9gvN8GDn00rohTM4aBgx4rPwPIXUl4gr2EzSJ6Q7LTBR4GtMwp7zasmWp1paNyslFd_PHUetVbLlzud5tCj_8VxDZdZX9HJ8b_qmYB4zNOL71irePLr7iZFhXOvk1G7e59o6SjygOpDN48vyhsavCQCMx_6Qh3BhToaj0jWOMEQJYnkUIMm8Hb3Am7VKXrEY1VzgHVXvevnD4cnJahzw9QysMTBu6Kumb6wd6XXIxlxrk2u-cps-LIhYzHCDu1iyKPA",
     "https://lh3.googleusercontent.com/aida-public/AB6AXuCREF9S-hek1HfnDHB1a7seoU4xUvmHVCPS9dzqLGsmqxLpFdd39CX2iEtENvYli9uACo0ZNd0DIEHvJ6AEqufEtTkPSoxQKtZyV2hAne0i2RVqF649O6zS0fRrRmC2kIbH-kTYlPdlf4C58gmFYVittdfTJcNjmBnOgdos7_A1UZhSoVavNZktPC1Hbiq5U4xi4JAzXZLkyVEJyYlISmtfuAXuLxqYALcQfnb_Y0ZQL8-BjhcEQk07VSbamriQaQ_SEPRnj3WTJA",
@@ -21,17 +24,17 @@ export default async function Home() {
 
   return (
     <>
-      <WelcomeModal />
+      <WelcomeModal horarios={horarios} />
       <main>
         {/* Hero Section: Slide 1 (Split View) */}
         <section className="relative h-[870px] flex items-center overflow-hidden bg-primary-container text-white">
           <div className="absolute inset-0 grid grid-cols-1 md:grid-cols-2">
             <div className="relative h-full overflow-hidden">
-              <Image className="w-full h-full object-cover opacity-30 md:opacity-60 grayscale hover:grayscale-0 transition-all duration-700" alt="Exterior neoclásico de la notaría" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUJABwnaMon5ECpBiHMLqPPUSUWmwzQoDh7yCun5Fv7bMnYCURYjfVGsOT8ugTFbubQo5MoDRlD1eBi1DTw3vKutJW33AqMrzNKykImeIusk_wJp9m0XyL_v6n_11xBK1C5qrV23IADr4I49-CKIga_EbSeKxe-FiE3wcEGYmu41alxvuDd4Q63C_0N44ebSmiuHZCDbG9jfW0dOnJ1-xleWK9iaUAe9DrWpHb2-vVWmi0bDvemooeuB8CiFplRfON53yCqch_KA" fill sizes="50vw" priority />
+              <Image className="w-full h-full object-cover opacity-30 md:opacity-60 grayscale hover:grayscale-0 transition-all duration-700" alt="Exterior neoclásico de la notaría" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUJABwnaMon5ECpBiHMLqPPUSUWmwzQoDh7yCun5Fv7bMnYCURYjfVGsOT8ugTFbubQo5MoDRlD1eBi1DTw3vKutJW33AqMrzNKykImeIusk_wJp9m0XyL_v6n_11xBK1C5qrV23IADr4I49-CKIga_EbSeKxe-FiE3wcEGYmu41alxvuDd4Q63C_0N44ebSmiuHZCDbG9jfW0dOnJ1-xleWK9iaUAe9DrWpHb2-vVWmi0bDvemooeuB8CiFplRfON53yCqch_KA" fill sizes="50vw" priority unoptimized />
               <div className="absolute inset-0 bg-gradient-to-r from-primary-container to-transparent opacity-80"></div>
             </div>
             <div className="relative h-full overflow-hidden hidden md:block">
-              <Image className="w-full h-full object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-700" alt="Interior moderno de oficina legal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlo2L9wHo7yVl5GjGUrmt2JrVta9xmh5gpc-AKpOqczQf44k7V6ZbZAVAJRtyaEpupQgrvi_USFrKAu6SZeg1N8usOjf4DAfBie4te8tq4kgZpwNF75KWw_DwaeaaUIqBR6VlXYnRBBVdzoZCVAJA5dsIQuASMNEaBlnQq4FWMRoj12q_G-P72lp8bD6uwgSpjG6OTrWHChMlkB_VJphV5XrB1NLTzI7okxSk2T3EbWa4IApmKeS5jbgJB6RNw60lzykEpRwTNmQ" fill sizes="50vw" priority />
+              <Image className="w-full h-full object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-700" alt="Interior moderno de oficina legal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlo2L9wHo7yVl5GjGUrmt2JrVta9xmh5gpc-AKpOqczQf44k7V6ZbZAVAJRtyaEpupQgrvi_USFrKAu6SZeg1N8usOjf4DAfBie4te8tq4kgZpwNF75KWw_DwaeaaUIqBR6VlXYnRBBVdzoZCVAJA5dsIQuASMNEaBlnQq4FWMRoj12q_G-P72lp8bD6uwgSpjG6OTrWHChMlkB_VJphV5XrB1NLTzI7okxSk2T3EbWa4IApmKeS5jbgJB6RNw60lzykEpRwTNmQ" fill sizes="50vw" priority unoptimized />
               <div className="absolute inset-0 bg-gradient-to-l from-primary-container to-transparent opacity-80"></div>
             </div>
           </div>

@@ -25,7 +25,8 @@ export default async function DashboardPage(props: { searchParams: Promise<{ tab
   const rol = perfil?.rol || 'empleado';
   const profileId = perfil?.id || null;
 
-  // Obtener Datos para CRUDs
+  // Optimización: Solo obtener los datos necesarios según la pestaña activa
+  // Esto previene errores de "ConnectTimeoutError" por saturación de conexiones a Supabase
   const [
     { data: servicios },
     { data: empleados },
@@ -34,20 +35,37 @@ export default async function DashboardPage(props: { searchParams: Promise<{ tab
     { data: reclamos },
     { data: documentos }
   ] = await Promise.all([
-    supabase.from('servicios').select('*').order('titulo'),
-    supabase.from('usuarios').select('*').order('rol', { ascending: false }).order('nombre'),
-    supabase.from('solicitudes').select(`
-      *,
-      servicio:servicios(titulo, arancel),
-      empleado_asignado:usuarios!empleado_asignado_id(id, nombre),
-      documentos_adjuntos(id, url_archivo, nombre_archivo)
-    `).order('creado_en', { ascending: false }),
+    // Servicios se necesita en: servicios, solicitudes, reportes
+    ['servicios', 'solicitudes', 'reportes'].includes(activeTab)
+      ? supabase.from('servicios').select('*').order('titulo')
+      : Promise.resolve({ data: [] }),
+    
+    // Empleados se necesita en: empleados, reportes
+    ['empleados', 'reportes'].includes(activeTab)
+      ? supabase.from('usuarios').select('*').order('rol', { ascending: false }).order('nombre')
+      : Promise.resolve({ data: [] }),
+    
+    // Solicitudes se necesita en: solicitudes, reportes
+    ['solicitudes', 'reportes'].includes(activeTab)
+      ? supabase.from('solicitudes').select(`
+          *,
+          servicio:servicios(titulo, arancel),
+          empleado_asignado:usuarios!empleado_asignado_id(id, nombre),
+          documentos_adjuntos(id, url_archivo, nombre_archivo)
+        `).order('creado_en', { ascending: false })
+      : Promise.resolve({ data: [] }),
+    
+    // Historial
     activeTab === 'reportes' && (rol === 'notario' || rol === 'supervisor') 
       ? supabase.from('historial_solicitudes').select('*, usuario:usuarios(nombre)').order('creado_en', { ascending: false }) 
       : Promise.resolve({ data: [] }),
+      
+    // Reclamos
     activeTab === 'reclamos' && (rol === 'notario' || rol === 'supervisor')
       ? supabase.from('reclamos_sugerencias').select('*').order('creado_en', { ascending: false })
       : Promise.resolve({ data: [] }),
+      
+    // Documentos
     activeTab === 'documentos' && rol === 'notario'
       ? supabase.from('documentos_institucionales').select('*').order('creado_en', { ascending: false })
       : Promise.resolve({ data: [] })

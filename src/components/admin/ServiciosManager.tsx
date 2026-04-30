@@ -12,7 +12,7 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
 
   // Filtros
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterEstado, setFilterEstado] = useState<'todos' | 'activo' | 'inactivo'>('todos');
+  const [filterEstado, setFilterEstado] = useState<'todos' | 'activo' | 'inactivo' | 'online'>('todos');
 
   // State para los requisitos dinámicos
   const [requisitos, setRequisitos] = useState<string[]>(['']);
@@ -94,14 +94,17 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
   const stats = useMemo(() => {
     let activos = 0;
     let inactivos = 0;
+    let online = 0;
     initialServicios.forEach(s => {
       if (s.activo) activos++;
       else inactivos++;
+      if (s.permite_pago_online) online++;
     });
     return {
       total: initialServicios.length,
       activos,
-      inactivos
+      inactivos,
+      online
     };
   }, [initialServicios]);
 
@@ -114,6 +117,7 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
       // Filtrar por estado de tarjeta Bento
       if (filterEstado === 'activo' && !s.activo) return false;
       if (filterEstado === 'inactivo' && s.activo) return false;
+      if (filterEstado === 'online' && !s.permite_pago_online) return false;
       return true;
     });
   }, [initialServicios, searchTerm, filterEstado]);
@@ -199,7 +203,7 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
         </div>
 
         {/* Dashboard Stats Bento */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Total */}
           <div 
             onClick={() => setFilterEstado('todos')}
@@ -252,6 +256,24 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
               </div>
             </div>
             <div className="text-2xl font-black text-slate-900 relative z-10">{stats.inactivos}</div>
+          </div>
+
+          {/* Online */}
+          <div 
+            onClick={() => setFilterEstado(filterEstado === 'online' ? 'todos' : 'online')}
+            className={`cursor-pointer bg-white py-3 px-4 rounded-xl shadow-sm border flex items-center justify-between transition-all hover:shadow-md relative overflow-hidden group ${filterEstado === 'online' ? 'border-purple-500 ring-1 ring-purple-500' : 'border-slate-100'}`}
+          >
+            <div className={`absolute -right-4 -bottom-4 w-16 h-16 rounded-full group-hover:scale-[2.5] transition-transform duration-500 z-0 ${filterEstado === 'online' ? 'bg-purple-500/10' : 'bg-purple-50/50'}`}></div>
+            <div className="flex items-center gap-3 relative z-10">
+              <div className={`p-2 rounded-lg flex-shrink-0 ${filterEstado === 'online' ? 'bg-purple-500 text-white' : 'bg-purple-50 text-purple-600'}`}>
+                <span className="material-symbols-outlined text-[20px]">credit_card</span>
+              </div>
+              <div>
+                <p className="text-slate-600 text-[13px] font-bold uppercase tracking-wider">Pago Online</p>
+                <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">Habilitados</p>
+              </div>
+            </div>
+            <div className="text-2xl font-black text-slate-900 relative z-10">{stats.online}</div>
           </div>
         </div>
 
@@ -388,7 +410,7 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
                   </div>
 
                   {/* Arancel */}
-                  <div className="w-full sm:w-1/3 space-y-2 shrink-0">
+                  <div className="w-full sm:w-1/4 space-y-2 shrink-0">
                     <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Arancel Base</label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400 font-bold">$</span>
@@ -397,9 +419,21 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
                         type="number" 
                         name="arancel" 
                         defaultValue={activeServiceEditing?.arancel} 
-                        className="w-full pl-8 font-headline font-bold text-2xl text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all tabular-nums" 
+                        className="w-full pl-8 font-headline font-bold text-xl text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all tabular-nums" 
                       />
                     </div>
+                  </div>
+
+                  {/* Arancel Texto */}
+                  <div className="w-full sm:w-1/3 space-y-2 shrink-0">
+                    <label className="font-label text-[11px] font-bold uppercase tracking-widest text-[#005ab4]">Texto Variable (Opcional)</label>
+                    <input 
+                      type="text" 
+                      name="arancel_texto" 
+                      defaultValue={activeServiceEditing?.arancel_texto || ''} 
+                      placeholder="Ej: $15.000 + FEA"
+                      className="w-full font-headline font-bold text-sm text-slate-900 border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#005ab4] focus:ring-1 focus:ring-[#005ab4] rounded-xl px-4 py-3 transition-all" 
+                    />
                   </div>
                 </div>
 
@@ -467,9 +501,9 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
                   </button>
                 </div>
 
-                {/* Estado Público */}
-                <div className="pt-6 border-t border-slate-100">
-                  <label className="flex items-center gap-4 cursor-pointer group w-full p-4 rounded-xl border border-slate-200 hover:border-[#005ab4] transition-colors bg-slate-50">
+                {/* Estado Público y Disponibilidad */}
+                <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row gap-4">
+                  <label className="flex flex-1 items-center gap-4 cursor-pointer group p-4 rounded-xl border border-slate-200 hover:border-[#005ab4] transition-colors bg-slate-50">
                     <div className="relative flex items-center shrink-0">
                       <input 
                         type="checkbox" 
@@ -481,10 +515,30 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
                     </div>
                     <div>
                       <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
-                        Visibilidad Pública (Activo)
+                        Visible en Catálogo
                       </span>
-                      <span className="block font-body text-xs text-slate-500 mt-0.5 max-w-sm">
-                        Permite que los ciudadanos encuentren e inicien este trámite desde el Catálogo Web.
+                      <span className="block font-body text-[10px] text-slate-500 mt-0.5 max-w-[200px]">
+                        Permite que se muestre en la web.
+                      </span>
+                    </div>
+                  </label>
+
+                  <label className="flex flex-1 items-center gap-4 cursor-pointer group p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition-colors bg-slate-50">
+                    <div className="relative flex items-center shrink-0">
+                      <input 
+                        type="checkbox" 
+                        name="permite_pago_online" 
+                        defaultChecked={activeServiceEditing ? activeServiceEditing.permite_pago_online : true} 
+                        className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-slate-300 rounded-lg checked:border-emerald-500 checked:bg-emerald-500 transition-all" 
+                      />
+                      <span className="absolute text-white material-symbols-outlined text-[18px] left-[12px] top-[12px] -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">check</span>
+                    </div>
+                    <div>
+                      <span className="block font-label text-sm font-bold text-slate-800 uppercase tracking-wider">
+                        Pago Online Habilitado
+                      </span>
+                      <span className="block font-body text-[10px] text-slate-500 mt-0.5 max-w-[200px]">
+                        Permite a los usuarios iniciar e pagar el trámite vía web.
                       </span>
                     </div>
                   </label>

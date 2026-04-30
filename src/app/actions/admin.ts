@@ -26,10 +26,12 @@ export async function upsertServicio(formData: FormData) {
   const titulo = formData.get('titulo') as string;
   const descripcion = formData.get('descripcion') as string;
   const arancel = parseInt(formData.get('arancel') as string);
+  const arancel_texto = (formData.get('arancel_texto') as string) || null;
+  const permite_pago_online = formData.get('permite_pago_online') === 'on';
   const activo = formData.get('activo') === 'on';
   const documentos_necesarios = formData.get('documentos_necesarios') as string;
 
-  const payload = { titulo, descripcion, arancel, activo, documentos_necesarios };
+  const payload = { titulo, descripcion, arancel, arancel_texto, permite_pago_online, activo, documentos_necesarios };
 
   if (id) {
     const { error } = await supabase.from('servicios').update({
@@ -58,6 +60,7 @@ export async function createEmpleado(formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
   const nombre = formData.get('nombre') as string;
+  const rut = formData.get('rut') as string;
   const rolNuevo = formData.get('rol') as string || 'empleado';
   const sueldo = parseInt(formData.get('sueldo') as string) || 0;
   const activo = formData.get('activo') === 'on';
@@ -83,6 +86,7 @@ export async function createEmpleado(formData: FormData) {
     const { error: dbError } = await supabaseAdmin.from('usuarios').insert({
       auth_id: data.user.id,
       nombre,
+      rut,
       email,
       rol: rolNuevo,
       sueldo,
@@ -110,9 +114,10 @@ export async function updateEmpleado(formData: FormData) {
   const id = formData.get('id');
   const sueldo = parseInt(formData.get('sueldo') as string);
   const nombre = formData.get('nombre') as string;
+  const rut = formData.get('rut') as string;
   const activo = formData.get('activo') === 'on';
 
-  const { error } = await supabase.from('usuarios').update({ sueldo, nombre, activo }).eq('id', id);
+  const { error } = await supabase.from('usuarios').update({ sueldo, nombre, rut, activo }).eq('id', id);
   if (error) return { success: false, error: error.message };
 
   revalidatePath('/administracion/dashboard');

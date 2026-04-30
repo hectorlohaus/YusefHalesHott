@@ -13,7 +13,7 @@ export default async function ServiciosPage() {
   const supabase = await createClient();
   const { data: servicios, error } = await supabase
     .from('servicios')
-    .select('id, titulo, descripcion, arancel, documentos_necesarios')
+    .select('id, titulo, descripcion, arancel, arancel_texto, permite_pago_online, documentos_necesarios')
     .eq('activo', true)
     .order('titulo');
 

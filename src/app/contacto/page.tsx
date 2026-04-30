@@ -1,10 +1,16 @@
+import { getHorarios } from '@/app/actions/horarios';
+
 export const metadata = {
   title: 'Horarios y Contacto | Notaría Yusef Hales Hott',
   description:
     'Horarios de atención, teléfonos, correos y ubicación de la Notaría Yusef Hales Hott en Traiguén, Chile.',
 };
 
-export default function ContactoPage() {
+export const revalidate = 3600;
+
+export default async function ContactoPage() {
+  const horarios = await getHorarios();
+
   return (
     <main className="pt-24 pb-24">
       <div className="max-w-screen-2xl mx-auto px-6 md:px-12">
@@ -110,47 +116,55 @@ export default function ContactoPage() {
           </div>
 
           <div className="max-w-4xl mx-auto bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[600px]">
-                <thead>
-                  <tr className="bg-surface-container-high">
-                    <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Día</th>
-                    <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Mañana</th>
-                    <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Tarde</th>
-                    <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface text-right whitespace-nowrap">Estado</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-surface-container">
-                  <tr className="hover:bg-surface-container-low transition-colors">
-                    <td className="px-6 md:px-8 py-4 font-medium text-on-surface">Lunes a Jueves</td>
-                    <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">09:00 - 14:00</td>
-                    <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">15:00 - 17:00</td>
-                    <td className="px-6 md:px-8 py-4 text-right">
-                      <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Abierto</span>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-surface-container-low transition-colors">
-                    <td className="px-6 md:px-8 py-4 font-medium text-on-surface">Viernes</td>
-                    <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">09:00 - 14:00</td>
-                    <td className="px-6 md:px-8 py-4 text-on-surface-variant italic font-sm">Cerrado</td>
-                    <td className="px-6 md:px-8 py-4 text-right">
-                      <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Mañana</span>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-surface-container-low transition-colors bg-surface-container-low/50">
-                    <td className="px-6 md:px-8 py-4 font-medium text-on-surface">Sábado y Domingo</td>
-                    <td className="px-6 md:px-8 py-4 text-on-surface-variant italic font-sm" colSpan={2}>Cerrado por descanso semanal</td>
-                    <td className="px-6 md:px-8 py-4 text-right">
-                      <span className="px-4 py-1.5 rounded-full bg-slate-200 text-slate-600 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Cerrado</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {horarios?.modo_actual === 'especial' ? (
+              <div className="p-8 md:p-12 text-center bg-amber-50 relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5 pointer-events-none">
+                  <span className="material-symbols-outlined text-[200px] text-amber-500">warning</span>
+                </div>
+                <div className="relative z-10 flex flex-col items-center max-w-2xl mx-auto">
+                  <span className="material-symbols-outlined text-5xl text-amber-500 mb-6">info</span>
+                  <h3 className="text-3xl font-headline font-bold text-amber-900 mb-4">{horarios.especial_titulo}</h3>
+                  <p className="text-lg text-amber-800 leading-relaxed">{horarios.especial_mensaje}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[600px]">
+                  <thead>
+                    <tr className="bg-surface-container-high">
+                      <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Día</th>
+                      <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Mañana</th>
+                      <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Tarde</th>
+                      <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface text-right whitespace-nowrap">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-surface-container">
+                    <tr className="hover:bg-surface-container-low transition-colors">
+                      <td className="px-6 md:px-8 py-4 font-medium text-on-surface">{horarios?.manana_dias || 'Lunes a Viernes'}</td>
+                      <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.manana_inicio || '09:00'} - {horarios?.manana_fin || '14:00'}</td>
+                      <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.tarde_inicio || '15:00'} - {horarios?.tarde_fin || '17:00'}</td>
+                      <td className="px-6 md:px-8 py-4 text-right">
+                        <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Abierto</span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-surface-container-low transition-colors bg-surface-container-low/50">
+                      <td className="px-6 md:px-8 py-4 font-medium text-on-surface">Fin de Semana</td>
+                      <td className="px-6 md:px-8 py-4 text-on-surface-variant italic font-sm" colSpan={2}>Cerrado por descanso semanal</td>
+                      <td className="px-6 md:px-8 py-4 text-right">
+                        <span className="px-4 py-1.5 rounded-full bg-slate-200 text-slate-600 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Cerrado</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+            
             <div className="p-6 md:p-8 bg-slate-900 text-white flex flex-col justify-center items-center gap-4 text-center">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-amber-500">event_note</span>
-                <p className="text-sm opacity-90 italic">Turnos especiales y feriados legales se informarán oportunamente por este medio.</p>
+                <p className="text-sm opacity-90 italic">
+                  {horarios?.modo_actual === 'normal' && horarios?.mensaje_viernes ? horarios.mensaje_viernes : 'Turnos especiales y feriados legales se informarán oportunamente por este medio.'}
+                </p>
               </div>
             </div>
           </div>

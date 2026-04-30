@@ -12,7 +12,7 @@ export default async function ArancelesPage() {
   const supabase = await createClient();
   const { data: servicios, error } = await supabase
     .from('servicios')
-    .select('id, titulo, arancel, documentos_necesarios')
+    .select('id, titulo, arancel, arancel_texto, permite_pago_online, documentos_necesarios')
     .eq('activo', true)
     .order('titulo');
 

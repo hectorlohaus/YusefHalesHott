@@ -3,10 +3,15 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 type Servicio = { 
   id: string; 
   titulo: string; 
   arancel: number | null; 
+  arancel_texto: string | null;
+  permite_pago_online: boolean;
   documentos_necesarios?: string | null;
 };
 
@@ -41,6 +46,32 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
     setQuery('');
     setActive('');
     inputRef.current?.focus();
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Tarifario de Aranceles - Notaría Yusef Hales Hott', 14, 20);
+    
+    doc.setFontSize(10);
+    doc.text(`Generado el: ${new Date().toLocaleDateString('es-CL')}`, 14, 30);
+
+    const tableData = servicios.map(s => [
+      s.titulo,
+      s.arancel_texto || formatPrice(s.arancel),
+      s.permite_pago_online ? 'Disponible Online' : 'Trámite Presencial'
+    ]);
+
+    autoTable(doc, {
+      startY: 35,
+      head: [['Trámite', 'Arancel Referencial', 'Disponibilidad']],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [52, 73, 94] },
+      styles: { fontSize: 9 },
+    });
+
+    doc.save('aranceles-notaria-yusef.pdf');
   };
 
   return (
@@ -80,6 +111,15 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
             Buscar
           </button>
         </div>
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={generatePDF}
+            className="flex items-center gap-2 bg-surface-container-high hover:bg-surface-variant text-on-surface py-3 px-6 rounded-lg font-bold text-sm transition-colors border border-outline-variant/10 shadow-sm"
+          >
+            <span className="material-symbols-outlined text-secondary">picture_as_pdf</span>
+            Descargar Tarifario (PDF)
+          </button>
+        </div>
       </div>
 
       {active && (
@@ -95,92 +135,82 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
           <p className="font-body text-on-surface-variant">No se encontraron trámites para su búsqueda.</p>
         </div>
       ) : (
-        <>
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-hidden rounded-2xl bg-surface-container-low/50">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-surface-container-high">
-                  <th className="px-8 py-6 font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Trámite</th>
-                  <th className="px-8 py-6 font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Base (CLP)</th>
-                  <th className="px-8 py-6 font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Requisitos Clave</th>
-                  <th className="px-8 py-6"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/10">
-                {filtered.map((servicio, index) => {
-                  const reqs = parseRequisitos(servicio.documentos_necesarios);
-                  const isStripe = index % 2 !== 0;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {filtered.map((servicio) => {
+            const reqs = parseRequisitos(servicio.documentos_necesarios);
+            return (
+              <div key={servicio.id} className="bg-surface-container-low p-6 sm:p-8 rounded-2xl border border-outline-variant/10 hover:shadow-lg transition-all duration-300 flex flex-col group relative">
+                
+                {/* Header (Título + Badge) */}
+                <div className="flex flex-col gap-3 mb-6">
+                  {servicio.permite_pago_online ? (
+                    <span className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-secondary/10 text-secondary border border-secondary/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+                      Disponible Online
+                    </span>
+                  ) : (
+                    <span className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-surface-variant/50 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-[12px]">storefront</span>
+                      Trámite Presencial
+                    </span>
+                  )}
+                  <h3 className="font-headline font-bold text-xl sm:text-2xl text-on-surface leading-tight">
+                    {servicio.titulo}
+                  </h3>
+                </div>
 
-                  return (
-                    <tr key={servicio.id} className={`group hover:bg-surface-container-lowest transition-colors ${isStripe ? 'bg-surface-container-low/30' : ''}`}>
-                      <td className="px-8 py-8">
-                        <div className="font-bold text-on-surface text-lg">{servicio.titulo}</div>
-                      </td>
-                      <td className="px-8 py-8 font-mono font-medium text-on-surface">{formatPrice(servicio.arancel)}</td>
-                      <td className="px-8 py-8 flex flex-wrap gap-2">
-                        {reqs.length > 0 ? (
-                          reqs.slice(0, 3).map((req, i) => (
-                            <span key={i} className="text-xs bg-surface-variant px-3 py-1 rounded-full text-on-surface-variant font-medium">
-                              {req.length > 20 ? req.substring(0, 20) + '...' : req}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-xs text-on-surface-variant/50 font-medium italic">Sin requisitos</span>
-                        )}
-                        {reqs.length > 3 && (
-                          <span className="text-xs bg-surface-variant px-2 py-1 rounded-full text-on-surface-variant font-medium">+{reqs.length - 3}</span>
-                        )}
-                      </td>
-                      <td className="px-8 py-8 text-right">
-                        <Link href={`/solicitar?servicio=${servicio.id}`} className="text-secondary font-bold text-sm flex items-center justify-end gap-1 group-hover:underline">
-                          Iniciar <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                        </Link>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile List View */}
-          <div className="md:hidden space-y-4">
-            {filtered.map((servicio) => {
-              const reqs = parseRequisitos(servicio.documentos_necesarios);
-
-              return (
-                <div key={servicio.id} className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant/10">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="pr-4">
-                      <h3 className="font-bold text-xl text-on-surface leading-tight">{servicio.titulo}</h3>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="font-mono font-bold text-secondary">{formatPrice(servicio.arancel)}</div>
-                      <div className="text-[10px] text-on-surface-variant">BASE CLP</div>
-                    </div>
+                {/* Arancel / Precio */}
+                <div className="mb-6 pb-6 border-b border-outline-variant/10">
+                  <div className="text-[10px] uppercase tracking-widest text-on-surface-variant/70 mb-1 font-bold">Arancel Referencial</div>
+                  <div className="font-headline font-bold text-3xl text-primary tabular-nums">
+                    {servicio.arancel_texto || formatPrice(servicio.arancel)}
                   </div>
-                  
-                  <div className="space-y-3 mb-6 flex flex-wrap gap-2">
+                  {servicio.arancel_texto && (
+                    <div className="text-xs text-on-surface-variant mt-2 italic font-medium">
+                      Valores variables requieren evaluación en notaría.
+                    </div>
+                  )}
+                </div>
+
+                {/* Requisitos */}
+                <div className="space-y-3 mb-8 flex-grow">
+                  <div className="text-[10px] uppercase tracking-widest text-on-surface-variant/70 font-bold mb-2">Requisitos Clave</div>
+                  <div className="flex flex-wrap gap-2">
                     {reqs.length > 0 ? (
-                      reqs.map((req, i) => (
-                        <span key={i} className="text-[10px] bg-surface-container-high px-2 py-1 rounded-lg text-on-surface-variant font-bold uppercase truncate max-w-full">
+                      reqs.slice(0, 3).map((req, i) => (
+                        <span key={i} className="text-[10px] bg-surface-container-high px-2 py-1.5 rounded-lg text-on-surface-variant font-bold uppercase truncate max-w-full">
                           {req}
                         </span>
                       ))
                     ) : (
-                      <span className="text-[10px] text-on-surface-variant/50 font-bold uppercase italic">Sin requisitos específicos</span>
+                      <span className="text-[10px] text-on-surface-variant/50 font-bold uppercase italic">Sin requisitos documentados</span>
+                    )}
+                    {reqs.length > 3 && (
+                      <span className="text-[10px] bg-surface-container-high px-2 py-1.5 rounded-lg text-on-surface-variant font-bold uppercase">
+                        +{reqs.length - 3}
+                      </span>
                     )}
                   </div>
-                  
-                  <Link href={`/solicitar?servicio=${servicio.id}`} className="w-full bg-primary text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-tertiary transition-colors active:scale-95">
+                </div>
+
+                {/* Acción */}
+                {servicio.permite_pago_online ? (
+                  <Link href={`/solicitar?servicio=${servicio.id}`} className="w-full bg-primary text-on-primary py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-tertiary transition-colors active:scale-95 shadow-md shadow-primary/20">
                     Solicitar Trámite <span className="material-symbols-outlined text-sm">open_in_new</span>
                   </Link>
-                </div>
-              );
-            })}
-          </div>
-        </>
+                ) : (
+                  <div className="w-full py-4 px-2 rounded-xl border border-outline-variant/20 bg-surface text-center flex flex-col items-center justify-center">
+                    <span className="text-sm font-bold text-on-surface-variant flex items-center gap-1 mb-1">
+                      <span className="material-symbols-outlined text-sm">info</span>
+                      Requiere Atención Presencial
+                    </span>
+                    <span className="text-[10px] text-on-surface-variant/70 italic px-2">Este trámite no se puede pagar anticipadamente por web.</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </>
   );

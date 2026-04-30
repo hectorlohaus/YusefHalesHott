@@ -75,3 +75,8 @@ migracion-terminada.sql
 
 # Getnet related
 getnet_manual.txt
+
+# Archivos de migración específicos
+bd_migracion_rut_empleados.sql
+bd_migracion_horarios.sql
+bd_migracion_aranceles.sql

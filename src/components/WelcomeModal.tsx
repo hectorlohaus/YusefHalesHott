@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-export default function WelcomeModal() {
+export default function WelcomeModal({ horarios }: { horarios?: any }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -45,6 +45,7 @@ export default function WelcomeModal() {
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHxDabekC7MGYNqmvSJmGqC9_S1OMgeKcWo5hW0KWOf_5bwGzzd1V3ZHRfF8AUqzCouJN0asSzLGPPIdfZqZdX_2hNepi_2p6OozcqqzIqHiekYCdkn0wpqLIHRKyTUSIqi7fUtd1wDy2p3Yipun0SSmecSDfQJcAxL6dDgcZ7ZRGq4CBdZZRqIW9IUfvWc5E7sTdvw8Ml-sL0BmVX_g_O69wTFuk4eo0vAY4HzmVZshXsoIziRDI0UPuhNJlDL8lzhA5p91MzFA"
             fill
             sizes="(max-width: 768px) 100vw, 42vw"
+            unoptimized
           />
           <div className="relative h-full flex flex-col justify-between p-6 sm:p-8 md:p-10 z-10">
             <div>
@@ -66,30 +67,50 @@ export default function WelcomeModal() {
           {/* Schedule Section */}
           <section>
             <h3 className="font-label text-xs font-bold tracking-widest text-on-surface-variant mb-8 uppercase">Horarios de Atención</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Morning Block */}
-              <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="material-symbols-outlined text-secondary">light_mode</span>
-                  <span className="font-label text-sm font-semibold text-secondary">Jornada Mañana</span>
+            
+            {horarios?.modo_actual === 'especial' ? (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                  <span className="material-symbols-outlined text-8xl text-amber-500">warning</span>
                 </div>
-                <p className="font-headline text-2xl text-on-surface">09:00 — 14:00</p>
-                <p className="text-xs text-on-surface-variant mt-2 font-medium">Lunes a Viernes</p>
-              </div>
-              {/* Afternoon Block */}
-              <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="material-symbols-outlined text-on-surface">dark_mode</span>
-                  <span className="font-label text-sm font-semibold text-on-surface">Jornada Tarde</span>
+                <div className="relative z-10 flex flex-col items-start">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="material-symbols-outlined text-amber-500 text-3xl">info</span>
+                    <h4 className="font-headline text-xl font-bold text-amber-900">{horarios.especial_titulo}</h4>
+                  </div>
+                  <p className="text-amber-800 font-medium">{horarios.especial_mensaje}</p>
                 </div>
-                <p className="font-headline text-2xl text-on-surface">15:00 — 17:00</p>
-                <p className="text-xs text-on-surface-variant mt-2 font-medium">Lunes a Jueves</p>
               </div>
-            </div>
-            <div className="mt-4 flex items-center gap-2 p-3 bg-surface-container text-on-surface-variant rounded-lg">
-              <span className="material-symbols-outlined text-sm">info</span>
-              <p className="text-[11px] font-medium italic">Viernes por la tarde: Cerrado.</p>
-            </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Morning Block */}
+                  <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="material-symbols-outlined text-secondary">light_mode</span>
+                      <span className="font-label text-sm font-semibold text-secondary">Jornada Mañana</span>
+                    </div>
+                    <p className="font-headline text-2xl text-on-surface">{horarios?.manana_inicio || '09:00'} — {horarios?.manana_fin || '14:00'}</p>
+                    <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.manana_dias || 'Lunes a Viernes'}</p>
+                  </div>
+                  {/* Afternoon Block */}
+                  <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="material-symbols-outlined text-on-surface">dark_mode</span>
+                      <span className="font-label text-sm font-semibold text-on-surface">Jornada Tarde</span>
+                    </div>
+                    <p className="font-headline text-2xl text-on-surface">{horarios?.tarde_inicio || '15:00'} — {horarios?.tarde_fin || '17:00'}</p>
+                    <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.tarde_dias || 'Lunes a Jueves'}</p>
+                  </div>
+                </div>
+                {horarios?.mensaje_viernes && (
+                  <div className="mt-4 flex items-center gap-2 p-3 bg-surface-container text-on-surface-variant rounded-lg">
+                    <span className="material-symbols-outlined text-sm">info</span>
+                    <p className="text-[11px] font-medium italic">{horarios.mensaje_viernes}</p>
+                  </div>
+                )}
+              </>
+            )}
           </section>
 
           {/* Contact Section */}

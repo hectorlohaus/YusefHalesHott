@@ -9,6 +9,8 @@ type Servicio = {
   titulo: string;
   descripcion: string | null;
   arancel: number | null;
+  arancel_texto: string | null;
+  permite_pago_online: boolean;
   documentos_necesarios: string | null;
 };
 
@@ -33,6 +35,7 @@ export default function ServiceSearch({
   initialServicios: Servicio[];
 }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'online' | 'presencial'>('all');
   const [selectedServicio, setSelectedServicio] = useState<Servicio | null>(null);
 
   // Close modal on Escape key
@@ -56,10 +59,9 @@ export default function ServiceSearch({
 
   const filtered = initialServicios.filter((s) => {
     const term = searchTerm.toLowerCase();
-    return (
-      s.titulo.toLowerCase().includes(term) ||
-      (s.descripcion ?? '').toLowerCase().includes(term)
-    );
+    const matchesSearch = s.titulo.toLowerCase().includes(term) || (s.descripcion ?? '').toLowerCase().includes(term);
+    const matchesFilter = filterType === 'all' || (filterType === 'online' && s.permite_pago_online) || (filterType === 'presencial' && !s.permite_pago_online);
+    return matchesSearch && matchesFilter;
   });
 
   return (
@@ -103,6 +105,32 @@ export default function ServiceSearch({
 
         {/* Services Grid */}
         <main className="max-w-7xl mx-auto px-8 py-24">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
+            <h2 className="font-headline text-2xl font-bold text-on-surface">Catálogo de Servicios</h2>
+            <div className="flex bg-surface-container-low p-1.5 rounded-xl shadow-sm border border-outline-variant/20 w-full sm:w-auto overflow-x-auto">
+              <button 
+                onClick={() => setFilterType('all')} 
+                className={`flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-xs font-label font-bold uppercase tracking-widest transition-all ${filterType === 'all' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-primary hover:bg-primary/5'}`}
+              >
+                Todos
+              </button>
+              <button 
+                onClick={() => setFilterType('online')} 
+                className={`flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-xs font-label font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 ${filterType === 'online' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-primary hover:bg-primary/5'}`}
+              >
+                <span className="material-symbols-outlined text-[16px]">language</span>
+                Online
+              </button>
+              <button 
+                onClick={() => setFilterType('presencial')} 
+                className={`flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-xs font-label font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 ${filterType === 'presencial' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-primary hover:bg-primary/5'}`}
+              >
+                <span className="material-symbols-outlined text-[16px]">storefront</span>
+                Presencial
+              </button>
+            </div>
+          </div>
+
           {filtered.length === 0 ? (
             <div className="text-center py-16 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
               <p className="font-body text-on-surface-variant">No se encontraron trámites para su búsqueda.</p>
@@ -154,14 +182,20 @@ export default function ServiceSearch({
                         </ul>
                       </div>
                     )}
-                    <div className="flex items-center justify-between pt-6 border-t border-outline-variant/10 mt-auto">
-                      <span className="text-xs font-bold uppercase tracking-widest text-secondary">
-                        {servicio.arancel ? `Desde $${servicio.arancel.toLocaleString('es-CL')}` : 'Consultar'}
+                    <div className="flex items-center justify-between pt-6 border-t border-outline-variant/10 mt-auto gap-4">
+                      <span className="text-xs font-bold uppercase tracking-widest text-secondary truncate max-w-[50%]">
+                        {servicio.arancel_texto || (servicio.arancel ? `Desde $${servicio.arancel.toLocaleString('es-CL')}` : 'Consultar')}
                       </span>
-                      <button className="flex items-center gap-2 text-on-surface font-semibold group/btn">
-                        Iniciar Trámite 
-                        <span className="material-symbols-outlined text-secondary transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
-                      </button>
+                      {servicio.permite_pago_online ? (
+                        <button className="flex items-center gap-2 text-on-surface font-semibold group/btn text-sm whitespace-nowrap">
+                          Iniciar Trámite 
+                          <span className="material-symbols-outlined text-secondary transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+                        </button>
+                      ) : (
+                        <span className="flex items-center gap-1 text-on-surface-variant font-semibold text-xs bg-surface-variant/50 px-2 py-1 rounded-md">
+                          <span className="material-symbols-outlined text-[14px]">storefront</span> Presencial
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
@@ -256,7 +290,7 @@ export default function ServiceSearch({
           />
           
           {/* Modal Content container */}
-          <div className="bg-surface w-full max-w-2xl relative shadow-2xl rounded-3xl ring-1 ring-black/5 overflow-hidden flex flex-col md:max-h-[90vh] animate-in zoom-in-95 fade-in duration-300">
+          <div className="bg-surface w-full max-w-5xl relative shadow-2xl rounded-3xl ring-1 ring-black/5 overflow-hidden flex flex-col max-h-[95vh] animate-in zoom-in-95 fade-in duration-300">
             {/* Close Button */}
             <button
               onClick={() => setSelectedServicio(null)}
@@ -270,78 +304,120 @@ export default function ServiceSearch({
             {/* Header / Accent top */}
             <div className="h-2 w-full bg-primary" />
 
-            <div className="p-8 sm:p-12 overflow-y-auto custom-scrollbar">
-              {/* Service Icon & Badge */}
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary">
+            <div className="p-6 sm:p-10 lg:p-14 overflow-y-auto custom-scrollbar">
+              {/* Header */}
+              <div className="flex items-start gap-5 mb-8 pb-8 border-b border-outline-variant/10">
+                <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shrink-0">
                   <span className="material-symbols-outlined text-3xl">history_edu</span>
                 </div>
-                <div>
-                  <span className="font-label text-[10px] uppercase tracking-[0.2em] text-primary font-bold">Catálogo de Servicios</span>
+                <div className="flex-1">
+                  <span className="inline-block px-3 py-1 bg-primary/10 text-primary font-label text-[10px] uppercase tracking-[0.1em] font-bold rounded-full mb-3">
+                    Catálogo Notarial
+                  </span>
                   <h1 className="font-headline text-3xl sm:text-4xl font-bold text-on-surface leading-tight">
                     {selectedServicio.titulo}
                   </h1>
                 </div>
               </div>
 
-              {/* Grid content */}
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-10">
-                {/* Description */}
-                <div className="space-y-4">
-                  <h3 className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold flex items-center gap-2">
-                    <span className="w-6 h-[1px] bg-outline-variant/30" /> Descripción del Trámite
-                  </h3>
-                  <p className="font-body text-base text-on-surface leading-relaxed italic">
-                    {selectedServicio.descripcion || 'Sin descripción disponible para este trámite.'}
-                  </p>
-                </div>
+              {/* Main Content Grid */}
+              <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
+                
+                {/* Left Column: Info & Requisitos */}
+                <div className="flex-1 space-y-8">
+                  {/* Description */}
+                  <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6">
+                    <h3 className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold flex items-center gap-3 mb-4">
+                      <span className="material-symbols-outlined text-sm">info</span> Acerca del Trámite
+                    </h3>
+                    <p className="font-body text-base text-on-surface leading-relaxed">
+                      {selectedServicio.descripcion || 'Este trámite no cuenta con una descripción detallada en este momento. Puede consultar directamente en notaría para más información.'}
+                    </p>
+                  </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 border-t border-outline-variant/20 pt-10">
                   {/* Requisitos */}
-                  <div className="space-y-4">
-                    <h3 className="font-label text-xs uppercase tracking-widest text-primary font-bold">Requisitos Obligatorios</h3>
+                  <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-6">
+                    <h3 className="font-label text-xs uppercase tracking-widest text-primary font-bold flex items-center gap-3 mb-4">
+                      <span className="material-symbols-outlined text-sm">assignment</span> Requisitos Obligatorios
+                    </h3>
                     {selectedServicio.documentos_necesarios ? (
-                      <ul className="space-y-3">
+                      <ul className="space-y-4">
                         {parseRequisitos(selectedServicio.documentos_necesarios).map((req, i) => (
-                          <li key={i} className="flex items-start gap-3 flex-wrap">
-                            <span className="material-symbols-outlined text-sm text-primary mt-0.5">check_circle</span>
-                            <span className="font-body text-sm text-on-surface-variant leading-relaxed max-w-[85%]">{req}</span>
+                          <li key={i} className="flex items-start gap-3">
+                            <span className="material-symbols-outlined text-primary mt-0.5 text-lg">check_circle</span>
+                            <span className="font-body text-sm text-on-surface-variant leading-relaxed pt-0.5">{req}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="font-body text-sm text-on-surface-variant/70 italic">No requiere documentación especial.</p>
+                      <div className="flex items-center gap-3 text-on-surface-variant/70 italic p-4 bg-surface-container-low rounded-xl">
+                        <span className="material-symbols-outlined">description</span>
+                        <p className="font-body text-sm">Este trámite no requiere documentación especial obligatoria.</p>
+                      </div>
                     )}
                   </div>
+                </div>
 
-                  {/* Arancel & Info */}
-                  <div className="space-y-6">
-                    <div className="bg-surface-container-low p-6 rounded-2xl border border-primary/10 shadow-sm">
-                      <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/70 mb-2">Arancel Referencial</p>
-                      <p className="font-headline text-4xl font-bold text-on-surface tabular-nums">
-                        {formatPrice(selectedServicio.arancel)}
+                {/* Right Column: Arancel & Action */}
+                <div className="w-full lg:w-96 shrink-0 space-y-6">
+                  {/* Tarjeta de Arancel */}
+                  <div className="bg-surface-container-low p-6 rounded-3xl border border-primary/10 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-0"></div>
+                    <div className="relative z-10">
+                      <h3 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/70 mb-3 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-sm">payments</span> Valor Referencial
+                      </h3>
+                      <div className="mb-4">
+                        {selectedServicio.arancel_texto ? (
+                          <p className="font-headline text-2xl font-bold text-on-surface leading-tight">
+                            {selectedServicio.arancel_texto}
+                          </p>
+                        ) : (
+                          <p className="font-headline text-4xl font-bold text-on-surface tabular-nums">
+                            {formatPrice(selectedServicio.arancel)}
+                          </p>
+                        )}
+                      </div>
+                      <div className="h-[1px] w-full bg-outline-variant/20 my-4"></div>
+                      <p className="text-xs text-on-surface-variant font-body leading-relaxed">
+                        {selectedServicio.permite_pago_online 
+                          ? 'Los precios referenciales pueden estar sujetos a variaciones menores dependiendo de la complejidad específica del documento.'
+                          : 'El valor exacto de este trámite debe ser cotizado presencialmente de acuerdo a sus antecedentes.'}
                       </p>
-                      <p className="text-[10px] text-on-surface-variant mt-2 font-body italic">Precios pueden variar según complejidad.</p>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Botón Acción */}
-              <div className="mt-12 flex flex-col sm:flex-row gap-4">
-                <Link
-                  href={`/solicitar?servicio=${selectedServicio.id}`}
-                  className="flex-1 bg-primary text-on-primary py-5 rounded-2xl font-body font-bold text-lg flex items-center justify-center gap-3 hover:bg-tertiary transition-colors active:scale-[0.98] shadow-lg shadow-primary/10"
-                >
-                  <span className="material-symbols-outlined">add_task</span>
-                  Iniciar Trámite Ahora
-                </Link>
-                <button
-                  onClick={() => setSelectedServicio(null)}
-                  className="sm:px-8 py-5 text-on-surface-variant font-body font-medium hover:text-on-surface transition-colors"
-                >
-                  Volver al Catálogo
-                </button>
+                  {/* Acciones */}
+                  <div className="flex flex-col gap-3">
+                    {selectedServicio.permite_pago_online ? (
+                      <Link
+                        href={`/solicitar?servicio=${selectedServicio.id}`}
+                        className="w-full bg-primary text-on-primary py-4 rounded-xl font-body font-bold text-sm flex items-center justify-center gap-2 hover:bg-tertiary transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">add_task</span>
+                        Iniciar Trámite Ahora
+                      </Link>
+                    ) : (
+                      <div className="w-full bg-surface-container text-on-surface-variant py-4 px-4 rounded-xl font-body font-medium text-sm flex flex-col items-center justify-center gap-2 border border-outline-variant/20 text-center">
+                        <div className="flex items-center gap-2 text-on-surface font-bold">
+                          <span className="material-symbols-outlined text-[20px]">storefront</span>
+                          Exclusivo Presencial
+                        </div>
+                        <span className="text-xs font-normal italic leading-tight text-on-surface-variant/90">
+                          Debe acudir a la notaría para realizar la gestión y cotización de este servicio.
+                        </span>
+                      </div>
+                    )}
+                    
+                    <button
+                      onClick={() => setSelectedServicio(null)}
+                      className="w-full py-3 text-on-surface-variant font-body font-semibold text-sm hover:text-on-surface transition-colors hover:bg-surface-container rounded-xl"
+                    >
+                      Volver al Catálogo
+                    </button>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
