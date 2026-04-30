@@ -405,7 +405,7 @@ export default function ReportesManager({ solicitudes, historial, empleados, ser
               
               <div className="space-y-3">
                  <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:border-slate-200 transition-colors">
-                    <span className="font-semibold text-slate-600 text-sm flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></div> Webpay (Getnet)</span>
+                    <span className="font-semibold text-slate-600 text-sm flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></div> Getnet</span>
                     <span className="font-black text-lg text-slate-800">${ingresosPorPago.getnet.toLocaleString('es-CL')}</span>
                  </div>
                  <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:border-slate-200 transition-colors">
