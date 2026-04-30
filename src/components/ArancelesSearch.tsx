@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 import jsPDF from 'jspdf';
@@ -32,9 +32,17 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
   const [active, setActive] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [visibleCount, setVisibleCount] = useState(9);
+
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [active]);
+
   const filtered = servicios.filter((s) =>
     s.titulo.toLowerCase().includes(active.toLowerCase())
   );
+
+  const visibleItems = filtered.slice(0, visibleCount);
 
   const handleSearch = () => setActive(query);
 
@@ -136,7 +144,7 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {filtered.map((servicio) => {
+          {visibleItems.map((servicio) => {
             const reqs = parseRequisitos(servicio.documentos_necesarios);
             return (
               <div key={servicio.id} className="bg-surface-container-low p-6 sm:p-8 rounded-2xl border border-outline-variant/10 hover:shadow-lg transition-all duration-300 flex flex-col group relative">
@@ -210,6 +218,18 @@ export default function ArancelesSearch({ servicios }: { servicios: Servicio[] }
               </div>
             );
           })}
+        </div>
+      )}
+
+      {filtered.length > visibleCount && (
+        <div className="flex justify-center mt-12">
+          <button
+            onClick={() => setVisibleCount(prev => prev + 9)}
+            className="bg-surface-container-high hover:bg-surface-variant text-on-surface py-3 px-8 rounded-full font-bold text-sm transition-colors border border-outline-variant/10 shadow-sm flex items-center gap-2"
+          >
+            <span className="material-symbols-outlined text-secondary">expand_more</span>
+            Ver más trámites
+          </button>
         </div>
       )}
     </>

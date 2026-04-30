@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateGetnetAuth } from '@/lib/getnet';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   return handleReturn(request);
 }
@@ -12,23 +14,45 @@ export async function POST(request: NextRequest) {
 
 async function handleReturn(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const solicitudId = searchParams.get('solicitudId');
+  let solicitudId = searchParams.get('solicitudId');
+  let requestId = searchParams.get('requestId');
+  let reference = searchParams.get('reference');
+
+  if (request.method === 'POST') {
+    try {
+      const formData = await request.formData();
+      if (!solicitudId) solicitudId = formData.get('solicitudId') as string | null;
+      if (!requestId) requestId = formData.get('requestId') as string | null;
+      if (!reference) reference = formData.get('reference') as string | null;
+    } catch (e) {
+      console.warn("Could not parse POST formData", e);
+    }
+  }
 
   const appUrl = process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin;
 
-  if (!solicitudId) {
-    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=missing_id`);
+  if (!solicitudId && !requestId && !reference) {
+    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=missing_identifiers`);
   }
 
   const supabase = await createClient();
 
-  const { data: solicitud } = await supabase
-    .from('solicitudes')
-    .select('id, getnet_session_id')
-    .eq('id', solicitudId)
-    .single();
+  let query = supabase.from('solicitudes').select('id, getnet_session_id');
 
-  if (!solicitud || !solicitud.getnet_session_id) {
+  if (solicitudId) {
+    query = query.eq('id', solicitudId);
+  } else if (requestId) {
+    query = query.eq('getnet_session_id', requestId);
+  } else if (reference && reference.startsWith('REQ-')) {
+    const shortId = reference.replace('REQ-', '');
+    query = query.ilike('id', `${shortId}%`);
+  } else {
+    return NextResponse.redirect(`${appUrl}/pago/fallo?reason=invalid_reference`);
+  }
+
+  const { data: solicitud, error: solError } = await query.maybeSingle();
+
+  if (solError || !solicitud || !solicitud.getnet_session_id) {
     return NextResponse.redirect(`${appUrl}/pago/fallo?reason=not_found`);
   }
 
@@ -40,29 +64,27 @@ async function handleReturn(request: NextRequest) {
     let status = 'PENDING';
     let data;
     
-    // Check up to 4 times (delay of 0s, 2s, 2s, 2s) to avoid race conditions 
-    // where Getnet backend hasn't updated the status by the time the user is redirected.
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       const res = await fetch(`${endpoint}/api/session/${solicitud.getnet_session_id}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'User-Agent': 'NotariaTraiguen/1.0',
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-store, no-cache, must-revalidate'
         },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(20000)
+        signal: AbortSignal.timeout(10000)
       });
 
       data = await res.json();
-      status = data.status?.status; // 'APPROVED', 'REJECTED', 'PENDING'
+      status = data.status?.status;
       
       if (status !== 'PENDING') {
-        break; // Status is definitive, break the loop
+        break;
       }
       
-      if (i < 3) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      if (i < 4) {
+        await new Promise(resolve => setTimeout(resolve, 1500));
       }
     }
 

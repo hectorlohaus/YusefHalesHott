@@ -64,6 +64,14 @@ export default function ServiceSearch({
     return matchesSearch && matchesFilter;
   });
 
+  const [visibleCount, setVisibleCount] = useState(9);
+
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [searchTerm, filterType]);
+
+  const visibleItems = filtered.slice(0, visibleCount);
+
   return (
     <>
       <div className="bg-background font-body text-on-surface overflow-x-hidden">
@@ -137,7 +145,7 @@ export default function ServiceSearch({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filtered.map((servicio) => {
+              {visibleItems.map((servicio) => {
                 const requisitos = parseRequisitos(servicio.documentos_necesarios);
                 let iconName = "history_edu"; // default icon
                 let t = servicio.titulo.toLowerCase();
@@ -200,6 +208,18 @@ export default function ServiceSearch({
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {filtered.length > visibleCount && (
+            <div className="flex justify-center mt-12">
+              <button
+                onClick={() => setVisibleCount(prev => prev + 9)}
+                className="bg-surface-container-high hover:bg-surface-variant text-on-surface py-3 px-8 rounded-full font-bold text-sm transition-colors border border-outline-variant/10 shadow-sm flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-secondary">expand_more</span>
+                Ver más trámites
+              </button>
             </div>
           )}
         </main>
