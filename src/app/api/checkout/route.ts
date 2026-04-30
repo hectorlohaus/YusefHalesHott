@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { generateGetnetAuth } from '@/lib/getnet';
 
 export async function GET(request: NextRequest) {
@@ -10,7 +10,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing solicitudId' }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   // Get Solicitud & Servicio info
   const { data: solicitud, error } = await supabase

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { generateGetnetAuth } from '@/lib/getnet';
 
 export const dynamic = 'force-dynamic';
@@ -36,7 +36,9 @@ async function handleReturn(request: NextRequest) {
     return NextResponse.redirect(new URL(`${appUrl}/pago/fallo?reason=missing_identifiers`), 303);
   }
 
-  const supabase = await createClient();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   let query = supabase.from('solicitudes').select('id, getnet_session_id');
 
