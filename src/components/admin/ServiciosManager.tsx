@@ -549,6 +549,7 @@ export default function ServiciosManager({ initialServicios, userRole }: { initi
                     </label>
                   </div>
                 </div>
+              </div>
 
               {/* Modal Footer Actions */}
               <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-3 sticky bottom-0 bg-white shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.05)]">
