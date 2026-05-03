@@ -56,7 +56,7 @@ export default function RepertorioSearch({
             const orFilter = field.searchIn.map(col => `${col}.ilike.%${value}%`).join(',');
             query = query.or(orFilter);
           } else if (['n_rep', 'numero_inscripcion'].includes(key)) {
-            query = query.ilike(key, `%${value}%`);
+            query = query.eq(key, value);
           } else {
             query = query.ilike(key, `%${value}%`);
           }
