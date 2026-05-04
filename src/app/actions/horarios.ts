@@ -22,7 +22,7 @@ export async function getHorarios() {
 
 export async function updateHorarios(formData: FormData) {
   const supabase = await createClient();
-  
+
   // Verify user is notario
   const { data: authData, error: authError } = await supabase.auth.getUser();
   if (authError || !authData.user) {
@@ -67,8 +67,6 @@ export async function updateHorarios(formData: FormData) {
     throw new Error('Error al actualizar la base de datos');
   }
 
-  // Revalidar las rutas que muestran los horarios
-  revalidatePath('/');
-  revalidatePath('/contacto');
-  revalidatePath('/administracion/dashboard/horarios');
+  // Revalidar las rutas que muestran los horariosss
+  revalidatePath('/', 'layout');
 }
