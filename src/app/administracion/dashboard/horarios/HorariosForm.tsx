@@ -39,34 +39,41 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-8">
+    <form action={handleSubmit} className="space-y-8 animate-in fade-in duration-500">
       {successMessage && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 mb-6 shadow-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-          <span className="material-symbols-outlined text-green-600">check_circle</span>
-          <p className="font-medium text-sm">{successMessage}</p>
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-5 shadow-sm flex items-start gap-4 animate-in slide-in-from-top-4">
+          <span className="material-symbols-outlined text-emerald-600 text-2xl animate-bounce">check_circle</span>
+          <p className="font-medium text-sm leading-relaxed mt-0.5">{successMessage}</p>
         </div>
       )}
 
       {/* Selector de Modo */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="material-symbols-outlined text-blue-600">tune</span>
+      <div className="bg-gradient-to-br from-white to-slate-50/80 p-8 rounded-3xl shadow-sm border border-slate-200/60 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3 relative z-10">
+          <div className="p-2.5 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center">
+            <span className="material-symbols-outlined">tune</span>
+          </div>
           Modo de Operación
         </h2>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <label className={`flex-1 flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${horarios.modo_actual === 'normal' ? 'bg-blue-50 border-blue-500' : 'hover:bg-gray-50'}`}>
-            <input type="radio" name="modo_actual" value="normal" defaultChecked={horarios.modo_actual === 'normal'} className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
-            <div className="ml-3">
-              <span className="block text-sm font-medium text-gray-900">Horario Normal</span>
-              <span className="block text-xs text-gray-500">Muestra la jornada predeterminada.</span>
+        <div className="flex flex-col sm:flex-row gap-5 relative z-10">
+          <label className={`group flex-1 flex items-start p-5 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${horarios.modo_actual === 'normal' ? 'bg-indigo-50/50 border-indigo-600 shadow-md ring-4 ring-indigo-600/10' : 'bg-white border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
+            <div className="flex items-center h-6">
+              <input type="radio" name="modo_actual" value="normal" defaultChecked={horarios.modo_actual === 'normal'} className="h-5 w-5 text-indigo-600 border-slate-300 focus:ring-indigo-600 transition-all cursor-pointer" />
+            </div>
+            <div className="ml-4">
+              <span className={`block text-base font-bold transition-colors ${horarios.modo_actual === 'normal' ? 'text-indigo-900' : 'text-slate-700 group-hover:text-indigo-700'}`}>Horario Normal</span>
+              <span className="block text-sm text-slate-500 mt-1">Muestra la jornada predeterminada y abre la notaría.</span>
             </div>
           </label>
 
-          <label className={`flex-1 flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${horarios.modo_actual === 'especial' ? 'bg-amber-50 border-amber-500' : 'hover:bg-gray-50'}`}>
-            <input type="radio" name="modo_actual" value="especial" defaultChecked={horarios.modo_actual === 'especial'} className="h-4 w-4 text-amber-600 border-gray-300 focus:ring-amber-500" />
-            <div className="ml-3">
-              <span className="block text-sm font-medium text-gray-900">Cerrar Notaría (Feriado/Evento)</span>
-              <span className="block text-xs text-gray-500">Oculta los horarios y muestra un aviso de cierre en toda la web.</span>
+          <label className={`group flex-1 flex items-start p-5 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${horarios.modo_actual === 'especial' ? 'bg-orange-50/50 border-orange-500 shadow-md ring-4 ring-orange-500/10' : 'bg-white border-slate-200 hover:border-orange-300 hover:bg-slate-50'}`}>
+            <div className="flex items-center h-6">
+              <input type="radio" name="modo_actual" value="especial" defaultChecked={horarios.modo_actual === 'especial'} className="h-5 w-5 text-orange-600 border-slate-300 focus:ring-orange-600 transition-all cursor-pointer" />
+            </div>
+            <div className="ml-4">
+              <span className={`block text-base font-bold transition-colors ${horarios.modo_actual === 'especial' ? 'text-orange-900' : 'text-slate-700 group-hover:text-orange-700'}`}>Cerrar Notaría (Feriado/Evento)</span>
+              <span className="block text-sm text-slate-500 mt-1">Oculta los horarios y muestra un aviso de cierre en toda la web.</span>
             </div>
           </label>
         </div>
@@ -74,46 +81,47 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Configuración Horario Normal */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span className="material-symbols-outlined text-green-600">schedule</span>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200/60 relative overflow-hidden group">
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:bg-emerald-500/10"></div>
+          
+          <h2 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3 relative z-10">
+            <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined">schedule</span>
+            </div>
             Horarios Habituales
           </h2>
 
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row gap-4 mb-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="tipo_horario" value="partido" checked={tipoHorario === 'partido'} onChange={() => setTipoHorario('partido')} className="text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Partido</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="tipo_horario" value="corrido" checked={tipoHorario === 'corrido'} onChange={() => setTipoHorario('corrido')} className="text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Corrido</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="tipo_horario" value="mixto" checked={tipoHorario === 'mixto'} onChange={() => setTipoHorario('mixto')} className="text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Mixto (Partido L-J, Corrido V)</span>
-              </label>
+          <div className="space-y-8 relative z-10">
+            <div className="flex flex-col sm:flex-row gap-3">
+              {['partido', 'corrido', 'mixto'].map((tipo) => (
+                <label key={tipo} className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${tipoHorario === tipo ? 'bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm' : 'border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-emerald-200'}`}>
+                  <input type="radio" name="tipo_horario" value={tipo} checked={tipoHorario === tipo} onChange={() => setTipoHorario(tipo)} className="hidden" />
+                  <span className="text-sm font-bold capitalize">{tipo === 'mixto' ? 'Mixto (L-J / V)' : tipo}</span>
+                </label>
+              ))}
             </div>
 
             {(tipoHorario === 'partido' || tipoHorario === 'mixto') && (
-              <>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">Jornada Mañana {tipoHorario === 'mixto' ? '(Lunes a Jueves)' : ''}</h3>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
+              <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
+                <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="font-bold text-slate-800 mb-4 text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-amber-500 text-lg">light_mode</span>
+                    Jornada Mañana {tipoHorario === 'mixto' ? '(Lunes a Jueves)' : ''}
+                  </h3>
+                  <div className="grid grid-cols-2 gap-5 mb-4">
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Apertura</label>
-                      <input type="time" name="manana_inicio" defaultValue={horarios.manana_inicio} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Apertura</label>
+                      <input type="time" name="manana_inicio" defaultValue={horarios.manana_inicio} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Cierre</label>
-                      <input type="time" name="manana_fin" defaultValue={horarios.manana_fin} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cierre</label>
+                      <input type="time" name="manana_fin" defaultValue={horarios.manana_fin} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                     </div>
                   </div>
                   {tipoHorario === 'partido' && (
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Días aplicables</label>
-                      <input type="text" name="manana_dias" defaultValue={horarios.manana_dias} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Días aplicables</label>
+                      <input type="text" name="manana_dias" defaultValue={horarios.manana_dias} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                     </div>
                   )}
                   {tipoHorario === 'mixto' && (
@@ -121,48 +129,54 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
                   )}
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">Jornada Tarde {tipoHorario === 'mixto' ? '(Lunes a Jueves)' : ''}</h3>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="font-bold text-slate-800 mb-4 text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-indigo-500 text-lg">dark_mode</span>
+                    Jornada Tarde {tipoHorario === 'mixto' ? '(Lunes a Jueves)' : ''}
+                  </h3>
+                  <div className="grid grid-cols-2 gap-5 mb-4">
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Apertura</label>
-                      <input type="time" name="tarde_inicio" defaultValue={horarios.tarde_inicio} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Apertura</label>
+                      <input type="time" name="tarde_inicio" defaultValue={horarios.tarde_inicio} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Cierre</label>
-                      <input type="time" name="tarde_fin" defaultValue={horarios.tarde_fin} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cierre</label>
+                      <input type="time" name="tarde_fin" defaultValue={horarios.tarde_fin} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                     </div>
                   </div>
                   {tipoHorario === 'partido' && (
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Días aplicables</label>
-                      <input type="text" name="tarde_dias" defaultValue={horarios.tarde_dias} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Días aplicables</label>
+                      <input type="text" name="tarde_dias" defaultValue={horarios.tarde_dias} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                     </div>
                   )}
                   {tipoHorario === 'mixto' && (
                     <input type="hidden" name="tarde_dias" value="Lunes a Jueves" />
                   )}
                 </div>
-              </>
+              </div>
             )}
 
             {(tipoHorario === 'corrido' || tipoHorario === 'mixto') && (
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                <h3 className="font-semibold text-gray-800 mb-3 text-sm">Jornada de Corrido {tipoHorario === 'mixto' ? '(Viernes)' : ''}</h3>
-                <div className="grid grid-cols-2 gap-4 mb-3">
+              <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow animate-in fade-in slide-in-from-bottom-2">
+                <h3 className="font-bold text-slate-800 mb-4 text-sm flex items-center gap-2">
+                  <span className="material-symbols-outlined text-teal-500 text-lg">timelapse</span>
+                  Jornada de Corrido {tipoHorario === 'mixto' ? '(Viernes)' : ''}
+                </h3>
+                <div className="grid grid-cols-2 gap-5 mb-4">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Apertura</label>
-                    <input type="time" name="corrido_inicio" defaultValue={horarios.corrido_inicio || '09:00'} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Apertura</label>
+                    <input type="time" name="corrido_inicio" defaultValue={horarios.corrido_inicio || '09:00'} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Cierre</label>
-                    <input type="time" name="corrido_fin" defaultValue={horarios.corrido_fin || '17:00'} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cierre</label>
+                    <input type="time" name="corrido_fin" defaultValue={horarios.corrido_fin || '17:00'} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                   </div>
                 </div>
                 {tipoHorario === 'corrido' && (
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Días aplicables</label>
-                    <input type="text" name="corrido_dias" defaultValue={horarios.corrido_dias || 'Lunes a Viernes'} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Días aplicables</label>
+                    <input type="text" name="corrido_dias" defaultValue={horarios.corrido_dias || 'Lunes a Viernes'} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" />
                   </div>
                 )}
                 {tipoHorario === 'mixto' && (
@@ -171,33 +185,46 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
               </div>
             )}
 
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <h3 className="font-semibold text-gray-800 mb-2 text-sm">Mensaje de Cierre Semanal</h3>
-              <input type="text" name="mensaje_viernes" defaultValue={horarios.mensaje_viernes} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Ej: Viernes por la tarde: Cerrado." />
+            <div className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
+                <span className="material-symbols-outlined text-slate-400 text-lg">event_busy</span>
+                Mensaje de Cierre Semanal
+              </h3>
+              <input type="text" name="mensaje_viernes" defaultValue={horarios.mensaje_viernes} className="block w-full rounded-xl border-slate-200 bg-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm font-medium py-2.5 transition-all hover:border-slate-300" placeholder="Ej: Fines de semana y festivos cerrados." />
             </div>
           </div>
         </div>
 
         {/* Configuración Horario Especial */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span className="material-symbols-outlined text-amber-500">warning</span>
-            Cierre por Feriado o Evento Especial
+        <div className="bg-gradient-to-br from-white to-orange-50/50 p-8 rounded-3xl shadow-sm border border-orange-200/60 flex flex-col relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-all duration-700 group-hover:bg-orange-500/10"></div>
+          
+          <h2 className="text-2xl font-bold text-orange-900 mb-8 flex items-center gap-3 relative z-10">
+            <div className="p-2.5 bg-orange-100 text-orange-700 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined">warning</span>
+            </div>
+            Cierre Temporal
           </h2>
-          <div className="bg-amber-50/50 p-5 rounded-lg border border-amber-100 flex-grow">
-            <p className="text-sm text-amber-800 mb-6">
-              Esta información se mostrará de forma destacada en la página principal y sección de contacto cuando se active el <strong>Modo de Cierre</strong>.
+          
+          <div className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-orange-100 flex-grow shadow-sm relative z-10">
+            <p className="text-sm text-orange-800 mb-8 leading-relaxed font-medium">
+              Al activar el <strong className="text-orange-900 bg-orange-200/50 px-2 py-0.5 rounded">Modo de Cierre</strong> arriba, esta información reemplazará tus horarios habituales en toda la web.
             </p>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Título del Aviso</label>
-                <input type="text" name="especial_titulo" defaultValue={horarios.especial_titulo} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm" placeholder="Ej: Cerrado por Feriado Irrenunciable" />
+                <label className="block text-[11px] font-bold text-orange-800 uppercase tracking-wider mb-2">Título del Aviso</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <span className="material-symbols-outlined text-orange-400 text-lg">title</span>
+                  </div>
+                  <input type="text" name="especial_titulo" defaultValue={horarios.especial_titulo} className="block w-full pl-10 rounded-xl border-orange-200 bg-white shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm font-medium py-3 transition-all hover:border-orange-300 placeholder:text-orange-300" placeholder="Ej: Cerrado por Feriado Irrenunciable" />
+                </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Mensaje de Detalles</label>
-                <textarea name="especial_mensaje" rows={4} defaultValue={horarios.especial_mensaje} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm" placeholder="Ej: Informamos que la notaría permanecerá cerrada el día de hoy..." />
+                <label className="block text-[11px] font-bold text-orange-800 uppercase tracking-wider mb-2">Mensaje de Detalles</label>
+                <textarea name="especial_mensaje" rows={5} defaultValue={horarios.especial_mensaje} className="block w-full rounded-xl border-orange-200 bg-white shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm font-medium p-4 transition-all hover:border-orange-300 placeholder:text-orange-300 resize-none leading-relaxed" placeholder="Ej: Informamos a nuestra comunidad que la notaría permanecerá cerrada el día de hoy. Retomaremos nuestras actividades..." />
               </div>
             </div>
           </div>
@@ -205,13 +232,23 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
       </div>
 
       {/* Acciones */}
-      <div className="flex justify-end pt-4 border-t border-gray-200">
+      <div className="flex justify-end pt-6">
         <button 
           type="submit" 
           disabled={isSaving}
-          className="inline-flex justify-center py-2.5 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="group relative inline-flex justify-center items-center gap-2 py-3.5 px-8 shadow-lg shadow-indigo-600/20 text-sm font-bold rounded-full text-white bg-gradient-to-r from-indigo-600 to-blue-700 hover:from-indigo-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 disabled:opacity-70 disabled:cursor-not-allowed transition-all hover:shadow-indigo-600/40 hover:-translate-y-0.5 active:translate-y-0"
         >
-          {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+          {isSaving ? (
+            <>
+              <span className="material-symbols-outlined animate-spin text-lg">sync</span>
+              Guardando Configuración...
+            </>
+          ) : (
+            <>
+              <span className="material-symbols-outlined text-lg group-hover:scale-110 transition-transform">save</span>
+              Guardar Configuración
+            </>
+          )}
         </button>
       </div>
     </form>
