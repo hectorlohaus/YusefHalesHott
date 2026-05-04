@@ -19,6 +19,9 @@ const notoSerif = Noto_Serif({
 export const metadata: Metadata = {
   title: "Notaría y Conservador Traiguén | Trámites Notariales en Línea",
   description: "Trámites y servicios notariales en línea en Traiguén, Chile. Rápido, seguro y transparente. Declaraciones juradas, poderes, escrituras y más.",
+  verification: {
+    google: "8zm6UiObyxTWbXM842astRygCam-YaoIQnmlua1tp_E",
+  },
 };
 
 export default function RootLayout({
