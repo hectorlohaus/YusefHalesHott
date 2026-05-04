@@ -41,9 +41,19 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
   return (
     <form action={handleSubmit} className="space-y-8 animate-in fade-in duration-500">
       {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-5 shadow-sm flex items-start gap-4 animate-in slide-in-from-top-4">
+        <div className="fixed bottom-8 right-8 z-[100] max-w-md w-full bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-5 shadow-2xl flex items-start gap-4 animate-in slide-in-from-bottom-8 fade-in duration-300">
           <span className="material-symbols-outlined text-emerald-600 text-2xl animate-bounce">check_circle</span>
-          <p className="font-medium text-sm leading-relaxed mt-0.5">{successMessage}</p>
+          <div className="flex-grow">
+            <p className="font-bold text-emerald-900 mb-1">¡Cambios Guardados!</p>
+            <p className="font-medium text-sm leading-relaxed">{successMessage}</p>
+          </div>
+          <button 
+            type="button" 
+            onClick={() => setSuccessMessage(null)}
+            className="text-emerald-500 hover:text-emerald-700 transition-colors"
+          >
+            <span className="material-symbols-outlined text-xl">close</span>
+          </button>
         </div>
       )}
 
