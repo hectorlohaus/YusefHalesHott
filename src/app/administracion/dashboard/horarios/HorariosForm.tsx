@@ -5,9 +5,48 @@ import { updateHorarios } from '@/app/actions/horarios';
 
 export default function HorariosForm({ horarios }: { horarios: any }) {
   const [tipoHorario, setTipoHorario] = useState(horarios.tipo_horario || 'partido');
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  async function handleSubmit(formData: FormData) {
+    setIsSaving(true);
+    setSuccessMessage(null);
+    try {
+      await updateHorarios(formData);
+      
+      const modo = formData.get('modo_actual');
+      if (modo === 'especial') {
+        setSuccessMessage('✅ Notaría Cerrada: El modo de cierre por feriado/evento ha sido activado y es visible para el público.');
+      } else {
+        const tipo = formData.get('tipo_horario');
+        let detalle = '';
+        if (tipo === 'mixto') {
+          detalle = `Mixto (L-J: ${formData.get('manana_inicio')} - ${formData.get('manana_fin')} y ${formData.get('tarde_inicio')} - ${formData.get('tarde_fin')} | V: ${formData.get('corrido_inicio')} - ${formData.get('corrido_fin')})`;
+        } else if (tipo === 'corrido') {
+          detalle = `Corrido (${formData.get('corrido_inicio')} - ${formData.get('corrido_fin')})`;
+        } else {
+          detalle = `Partido (${formData.get('manana_inicio')} - ${formData.get('manana_fin')} y ${formData.get('tarde_inicio')} - ${formData.get('tarde_fin')})`;
+        }
+        setSuccessMessage(`✅ Horario Público Actualizado. Configuración activa: ${detalle}. Estado: Abierto.`);
+      }
+    } catch (e: any) {
+      alert(e.message || 'Error al guardar los cambios');
+    } finally {
+      setIsSaving(false);
+      // Auto-hide success message after 8 seconds
+      setTimeout(() => setSuccessMessage(null), 8000);
+    }
+  }
 
   return (
-    <form action={updateHorarios} className="space-y-8">
+    <form action={handleSubmit} className="space-y-8">
+      {successMessage && (
+        <div className="bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 mb-6 shadow-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+          <span className="material-symbols-outlined text-green-600">check_circle</span>
+          <p className="font-medium text-sm">{successMessage}</p>
+        </div>
+      )}
+
       {/* Selector de Modo */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -167,8 +206,12 @@ export default function HorariosForm({ horarios }: { horarios: any }) {
 
       {/* Acciones */}
       <div className="flex justify-end pt-4 border-t border-gray-200">
-        <button type="submit" className="inline-flex justify-center py-2.5 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          Guardar Cambios
+        <button 
+          type="submit" 
+          disabled={isSaving}
+          className="inline-flex justify-center py-2.5 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSaving ? 'Guardando...' : 'Guardar Cambios'}
         </button>
       </div>
     </form>
