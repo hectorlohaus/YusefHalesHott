@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { generateGetnetAuth } from '@/lib/getnet';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30; // 30 seconds limit to allow Getnet polling to complete
 
 export async function GET(request: NextRequest) {
   return handleReturn(request);
