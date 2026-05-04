@@ -30,16 +30,18 @@ export default function DashboardNav({ perfil }: { perfil: any }) {
                 >
                   Gestión Notarial (Nueva Web)
                 </Link>
-                <Link 
-                  href="/administracion/dashboard/legacy" 
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    pathname?.includes('/legacy') 
-                      ? 'border-white text-white' 
-                      : 'border-transparent text-blue-200 hover:text-white hover:border-blue-200'
-                  }`}
-                >
-                  Registros Públicos (Web Existente)
-                </Link>
+                {perfil?.rol === 'notario' && (
+                  <Link 
+                    href="/administracion/dashboard/legacy" 
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                      pathname?.includes('/legacy') 
+                        ? 'border-white text-white' 
+                        : 'border-transparent text-blue-200 hover:text-white hover:border-blue-200'
+                    }`}
+                  >
+                    Registros Públicos (Web Existente)
+                  </Link>
+                )}
                 {perfil?.rol === 'notario' && (
                   <Link 
                     href="/administracion/dashboard/horarios" 
@@ -79,14 +81,16 @@ export default function DashboardNav({ perfil }: { perfil: any }) {
           >
             Gestión Nueva
           </Link>
-          <Link 
-            href="/administracion/dashboard/legacy" 
-            className={`px-4 py-3 whitespace-nowrap text-sm font-medium border-b-2 ${
-              pathname?.includes('/legacy') ? 'border-white text-white' : 'border-transparent text-blue-200'
-            }`}
-          >
-            Web Existente
-          </Link>
+          {perfil?.rol === 'notario' && (
+            <Link 
+              href="/administracion/dashboard/legacy" 
+              className={`px-4 py-3 whitespace-nowrap text-sm font-medium border-b-2 ${
+                pathname?.includes('/legacy') ? 'border-white text-white' : 'border-transparent text-blue-200'
+              }`}
+            >
+              Web Existente
+            </Link>
+          )}
           {perfil?.rol === 'notario' && (
             <Link 
               href="/administracion/dashboard/horarios" 

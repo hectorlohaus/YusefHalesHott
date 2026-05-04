@@ -151,20 +151,39 @@ export default function SideNav({ perfil }: { perfil: any }) {
             </Link>
           )}
 
+          {/* Horarios de Atención */}
+          {perfil?.rol === 'notario' && (
+            <Link
+              href="/administracion/dashboard/horarios"
+              title={isCollapsed ? "Horarios de Atención" : undefined}
+              className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'} py-3 font-inter text-sm font-medium transition-all duration-200 ease-in-out rounded-lg ${pathname?.includes('/horarios')
+                  ? `text-blue-400 bg-slate-800/50 ${isCollapsed ? 'border-l-4' : 'border-r-4'} border-[#005ab4]`
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {!isCollapsed && <span className="truncate">Horarios de Atención</span>}
+            </Link>
+          )}
+
           {/* Registros Públicos */}
-          <Link
-            href="/administracion/dashboard/legacy"
-            title={isCollapsed ? "Registros Públicos (Legacy)" : undefined}
-            className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'} py-3 font-inter text-sm font-medium transition-all duration-200 ease-in-out rounded-lg ${currentTab === 'legacy'
-                ? `text-blue-400 bg-slate-800/50 ${isCollapsed ? 'border-l-4' : 'border-r-4'} border-[#005ab4]`
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              } mt-4`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            {!isCollapsed && <span className="truncate">Registros Públicos</span>}
-          </Link>
+          {perfil?.rol === 'notario' && (
+            <Link
+              href="/administracion/dashboard/legacy"
+              title={isCollapsed ? "Registros Públicos (Legacy)" : undefined}
+              className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'} py-3 font-inter text-sm font-medium transition-all duration-200 ease-in-out rounded-lg ${currentTab === 'legacy'
+                  ? `text-blue-400 bg-slate-800/50 ${isCollapsed ? 'border-l-4' : 'border-r-4'} border-[#005ab4]`
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                } mt-4`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              {!isCollapsed && <span className="truncate">Registros Públicos</span>}
+            </Link>
+          )}
 
           {/* Reportes Avanzados */}
           {(perfil?.rol === 'notario' || perfil?.rol === 'supervisor') && (

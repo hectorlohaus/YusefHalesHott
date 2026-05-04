@@ -80,3 +80,4 @@ getnet_manual.txt
 bd_migracion_rut_empleados.sql
 bd_migracion_horarios.sql
 bd_migracion_aranceles.sql
+bd_migracion_horarios_mixto.sql

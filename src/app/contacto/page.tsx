@@ -133,23 +133,64 @@ export default async function ContactoPage() {
                   <thead>
                     <tr className="bg-surface-container-high">
                       <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Día</th>
-                      <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Mañana</th>
-                      <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Tarde</th>
+                      {horarios?.tipo_horario === 'corrido' ? (
+                        <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Jornada de Corrido</th>
+                      ) : horarios?.tipo_horario === 'mixto' ? (
+                        <>
+                          <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horarios (Mañana / Tarde) / Corrido</th>
+                        </>
+                      ) : (
+                        <>
+                          <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Mañana</th>
+                          <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface whitespace-nowrap">Horario Tarde</th>
+                        </>
+                      )}
                       <th className="px-6 md:px-8 py-5 font-headline font-bold text-on-surface text-right whitespace-nowrap">Estado</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-surface-container">
-                    <tr className="hover:bg-surface-container-low transition-colors">
-                      <td className="px-6 md:px-8 py-4 font-medium text-on-surface">{horarios?.manana_dias || 'Lunes a Viernes'}</td>
-                      <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.manana_inicio || '09:00'} - {horarios?.manana_fin || '14:00'}</td>
-                      <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.tarde_inicio || '15:00'} - {horarios?.tarde_fin || '17:00'}</td>
-                      <td className="px-6 md:px-8 py-4 text-right">
-                        <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Abierto</span>
-                      </td>
-                    </tr>
+                    {horarios?.tipo_horario === 'mixto' ? (
+                      <>
+                        <tr className="hover:bg-surface-container-low transition-colors">
+                          <td className="px-6 md:px-8 py-4 font-medium text-on-surface">{horarios?.manana_dias || 'Lunes a Jueves'}</td>
+                          <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">
+                            <span className="block mb-1">Mañana: {horarios?.manana_inicio || '09:00'} - {horarios?.manana_fin || '14:00'}</span>
+                            <span className="block">Tarde: {horarios?.tarde_inicio || '15:00'} - {horarios?.tarde_fin || '17:00'}</span>
+                          </td>
+                          <td className="px-6 md:px-8 py-4 text-right">
+                            <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Abierto</span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-surface-container-low transition-colors bg-surface-container-low/20">
+                          <td className="px-6 md:px-8 py-4 font-medium text-on-surface">{horarios?.corrido_dias || 'Viernes'}</td>
+                          <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">Corrido: {horarios?.corrido_inicio || '09:00'} - {horarios?.corrido_fin || '17:00'}</td>
+                          <td className="px-6 md:px-8 py-4 text-right">
+                            <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Abierto</span>
+                          </td>
+                        </tr>
+                      </>
+                    ) : (
+                      <tr className="hover:bg-surface-container-low transition-colors">
+                        {horarios?.tipo_horario === 'corrido' ? (
+                          <>
+                            <td className="px-6 md:px-8 py-4 font-medium text-on-surface">{horarios?.corrido_dias || 'Lunes a Viernes'}</td>
+                            <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.corrido_inicio || '09:00'} - {horarios?.corrido_fin || '17:00'}</td>
+                          </>
+                        ) : (
+                          <>
+                            <td className="px-6 md:px-8 py-4 font-medium text-on-surface">{horarios?.manana_dias || 'Lunes a Viernes'}</td>
+                            <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.manana_inicio || '09:00'} - {horarios?.manana_fin || '14:00'}</td>
+                            <td className="px-6 md:px-8 py-4 text-on-surface-variant font-mono">{horarios?.tarde_inicio || '15:00'} - {horarios?.tarde_fin || '17:00'}</td>
+                          </>
+                        )}
+                        <td className="px-6 md:px-8 py-4 text-right">
+                          <span className="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Abierto</span>
+                        </td>
+                      </tr>
+                    )}
                     <tr className="hover:bg-surface-container-low transition-colors bg-surface-container-low/50">
                       <td className="px-6 md:px-8 py-4 font-medium text-on-surface">Fin de Semana</td>
-                      <td className="px-6 md:px-8 py-4 text-on-surface-variant italic font-sm" colSpan={2}>Cerrado por descanso semanal</td>
+                      <td className="px-6 md:px-8 py-4 text-on-surface-variant italic font-sm" colSpan={horarios?.tipo_horario === 'partido' ? 2 : 1}>Cerrado por descanso semanal</td>
                       <td className="px-6 md:px-8 py-4 text-right">
                         <span className="px-4 py-1.5 rounded-full bg-slate-200 text-slate-600 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Cerrado</span>
                       </td>

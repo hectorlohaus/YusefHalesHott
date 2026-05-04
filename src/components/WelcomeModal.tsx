@@ -83,26 +83,69 @@ export default function WelcomeModal({ horarios }: { horarios?: any }) {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Morning Block */}
+                {horarios?.tipo_horario === 'corrido' ? (
                   <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
                     <div className="flex items-center gap-3 mb-4">
-                      <span className="material-symbols-outlined text-secondary">light_mode</span>
-                      <span className="font-label text-sm font-semibold text-secondary">Jornada Mañana</span>
+                      <span className="material-symbols-outlined text-secondary">schedule</span>
+                      <span className="font-label text-sm font-semibold text-secondary">Jornada de Corrido</span>
                     </div>
-                    <p className="font-headline text-2xl text-on-surface">{horarios?.manana_inicio || '09:00'} — {horarios?.manana_fin || '14:00'}</p>
-                    <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.manana_dias || 'Lunes a Viernes'}</p>
+                    <p className="font-headline text-2xl text-on-surface">{horarios?.corrido_inicio || '09:00'} — {horarios?.corrido_fin || '17:00'}</p>
+                    <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.corrido_dias || 'Lunes a Viernes'}</p>
                   </div>
-                  {/* Afternoon Block */}
-                  <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="material-symbols-outlined text-on-surface">dark_mode</span>
-                      <span className="font-label text-sm font-semibold text-on-surface">Jornada Tarde</span>
+                ) : horarios?.tipo_horario === 'mixto' ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Morning Block */}
+                      <div className="group p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="material-symbols-outlined text-secondary text-sm">light_mode</span>
+                          <span className="font-label text-xs font-semibold text-secondary">Mañana</span>
+                        </div>
+                        <p className="font-headline text-lg text-on-surface">{horarios?.manana_inicio || '09:00'} — {horarios?.manana_fin || '14:00'}</p>
+                        <p className="text-[10px] text-on-surface-variant mt-1 font-medium">{horarios?.manana_dias || 'Lunes a Jueves'}</p>
+                      </div>
+                      {/* Afternoon Block */}
+                      <div className="group p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="material-symbols-outlined text-on-surface text-sm">dark_mode</span>
+                          <span className="font-label text-xs font-semibold text-on-surface">Tarde</span>
+                        </div>
+                        <p className="font-headline text-lg text-on-surface">{horarios?.tarde_inicio || '15:00'} — {horarios?.tarde_fin || '17:00'}</p>
+                        <p className="text-[10px] text-on-surface-variant mt-1 font-medium">{horarios?.tarde_dias || 'Lunes a Jueves'}</p>
+                      </div>
                     </div>
-                    <p className="font-headline text-2xl text-on-surface">{horarios?.tarde_inicio || '15:00'} — {horarios?.tarde_fin || '17:00'}</p>
-                    <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.tarde_dias || 'Lunes a Jueves'}</p>
+                    {/* Corrido Block */}
+                    <div className="group p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high border-l-4 border-secondary">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="material-symbols-outlined text-secondary text-sm">schedule</span>
+                        <span className="font-label text-xs font-semibold text-secondary">Jornada de Corrido</span>
+                      </div>
+                      <p className="font-headline text-lg text-on-surface">{horarios?.corrido_inicio || '09:00'} — {horarios?.corrido_fin || '17:00'}</p>
+                      <p className="text-[10px] text-on-surface-variant mt-1 font-medium">{horarios?.corrido_dias || 'Viernes'}</p>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Morning Block */}
+                    <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="material-symbols-outlined text-secondary">light_mode</span>
+                        <span className="font-label text-sm font-semibold text-secondary">Jornada Mañana</span>
+                      </div>
+                      <p className="font-headline text-2xl text-on-surface">{horarios?.manana_inicio || '09:00'} — {horarios?.manana_fin || '14:00'}</p>
+                      <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.manana_dias || 'Lunes a Viernes'}</p>
+                    </div>
+                    {/* Afternoon Block */}
+                    <div className="group p-6 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-surface-container-high">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="material-symbols-outlined text-on-surface">dark_mode</span>
+                        <span className="font-label text-sm font-semibold text-on-surface">Jornada Tarde</span>
+                      </div>
+                      <p className="font-headline text-2xl text-on-surface">{horarios?.tarde_inicio || '15:00'} — {horarios?.tarde_fin || '17:00'}</p>
+                      <p className="text-xs text-on-surface-variant mt-2 font-medium">{horarios?.tarde_dias || 'Lunes a Jueves'}</p>
+                    </div>
+                  </div>
+                )}
                 {horarios?.mensaje_viernes && (
                   <div className="mt-4 flex items-center gap-2 p-3 bg-surface-container text-on-surface-variant rounded-lg">
                     <span className="material-symbols-outlined text-sm">info</span>

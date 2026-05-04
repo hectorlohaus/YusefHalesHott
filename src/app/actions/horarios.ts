@@ -41,12 +41,16 @@ export async function updateHorarios(formData: FormData) {
 
   const payload = {
     modo_actual: formData.get('modo_actual') as string,
+    tipo_horario: formData.get('tipo_horario') as string,
     manana_inicio: formData.get('manana_inicio') as string,
     manana_fin: formData.get('manana_fin') as string,
     manana_dias: formData.get('manana_dias') as string,
     tarde_inicio: formData.get('tarde_inicio') as string,
     tarde_fin: formData.get('tarde_fin') as string,
     tarde_dias: formData.get('tarde_dias') as string,
+    corrido_inicio: formData.get('corrido_inicio') as string,
+    corrido_fin: formData.get('corrido_fin') as string,
+    corrido_dias: formData.get('corrido_dias') as string,
     mensaje_viernes: formData.get('mensaje_viernes') as string,
     especial_titulo: formData.get('especial_titulo') as string,
     especial_mensaje: formData.get('especial_mensaje') as string,
